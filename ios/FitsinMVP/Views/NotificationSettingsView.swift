@@ -79,13 +79,33 @@ struct NotificationSettingsView: View {
             withAnimation(.easeOut(duration: 0.4)) {
                 animateIn = true
             }
+            await loadPreferences()
         }
         .onChange(of: newSale) { _, _ in saveIfLoaded() }
         .onChange(of: myCommissionSale) { _, _ in saveIfLoaded() }
         .onChange(of: dailySummary) { _, _ in saveIfLoaded() }
         .onChange(of: rotaReminder) { _, _ in saveIfLoaded() }
         .onChange(of: sellerPrefix) { _, _ in saveIfLoaded() }
-        .onAppear { loaded = true }
+    }
+
+    private func loadPreferences() async {
+        guard let token = KeychainStore.readDeviceToken(), !token.isEmpty else {
+            loaded = true
+            return
+        }
+
+        if let device = try? await APIClient.shared.getDevice(token: token) {
+            let prefs = device.preferences
+            newSale = prefs.newSale
+            myCommissionSale = prefs.myCommissionSale
+            dailySummary = prefs.dailySummary
+            rotaReminder = prefs.rotaReminder
+            sellerPrefix = prefs.sellerPrefix ?? ""
+        }
+
+        // Enable saves only after applying loaded values so seeding them
+        // doesn't trigger a redundant write back to the server.
+        loaded = true
     }
 
     private var headerSection: some View {

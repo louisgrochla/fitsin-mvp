@@ -20,6 +20,8 @@ targets:
       - FitsinMVP/Resources
     entitlements:
       path: FitsinMVP/Resources/FitsinMVP.entitlements
+      properties:
+        aps-environment: production
     dependencies:
       - package: GoogleSignIn
         product: GoogleSignIn

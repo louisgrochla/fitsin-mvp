@@ -14,6 +14,29 @@ struct ManualEntriesView: View {
         return f
     }
 
+    private static let isoDayParser: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.timeZone = TimeZone(identifier: "Europe/London")
+        f.locale = Locale(identifier: "en_GB")
+        return f
+    }()
+
+    private static let friendlyDay: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "EEE d MMM"
+        f.timeZone = TimeZone(identifier: "Europe/London")
+        f.locale = Locale(identifier: "en_GB")
+        return f
+    }()
+
+    private func friendlyDate(_ iso: String) -> String {
+        if let date = Self.isoDayParser.date(from: iso) {
+            return Self.friendlyDay.string(from: date)
+        }
+        return iso
+    }
+
     private var filteredEntries: [ManualEntry] {
         guard let selectedSource else { return vm.entries }
         return vm.entries.filter { $0.source == selectedSource }
@@ -69,12 +92,12 @@ struct ManualEntriesView: View {
         .navigationTitle("Manual Entries")
         .refreshable { await vm.load() }
         .task {
-            await vm.load()
-            vm.startAutoRefresh(intervalSeconds: 60)
             animateIn = false
             withAnimation(.spring(duration: 0.45, bounce: 0.2)) {
                 animateIn = true
             }
+            await vm.load()
+            vm.startAutoRefresh(intervalSeconds: 60)
         }
         .onDisappear { vm.stopAutoRefresh() }
         .alert("Delete entry?", isPresented: Binding(
@@ -148,7 +171,7 @@ struct ManualEntriesView: View {
                 Spacer()
                 StatusPill(text: entry.source.label.uppercased(), tone: BrandTheme.accent)
             }
-            Text(entry.date)
+            Text(friendlyDate(entry.date))
                 .font(.caption)
                 .foregroundStyle(BrandTheme.inkSoft)
 

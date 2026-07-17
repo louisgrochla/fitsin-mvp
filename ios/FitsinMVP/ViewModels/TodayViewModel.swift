@@ -73,7 +73,8 @@ final class TodayViewModel: ObservableObject {
         amount: Double,
         source: ManualSource,
         description: String?,
-        note: String?
+        note: String?,
+        date: String? = nil
     ) async {
         isSavingManualEntry = true
         defer { isSavingManualEntry = false }
@@ -83,10 +84,13 @@ final class TodayViewModel: ObservableObject {
                 amount: amount,
                 source: source,
                 description: description,
-                note: note
+                note: note,
+                date: date
             )
             manualEntryStatus = "Manual sale logged."
-            await load()
+            // Refresh metrics off the critical path so logging several sales in a
+            // row stays snappy — the form is ready again as soon as the POST returns.
+            Task { await load() }
         } catch {
             manualEntryStatus = "Could not save manual sale."
         }

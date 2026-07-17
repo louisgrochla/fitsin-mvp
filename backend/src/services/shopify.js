@@ -2,8 +2,14 @@ import { DateTime } from 'luxon';
 import { config } from '../config.js';
 import { fetchWithRetry } from '../utils/http.js';
 import { getShopifyAccessToken } from './shopifyTokenStore.js';
+import { SELLER_PREFIXES, COMMISSION_RATE, matchSellerPrefix } from './sellerConfig.js';
+import { getPaidItemIds } from './sellerPayouts.js';
 
 const SHOPIFY_URL = `https://${config.shopify.domain}/admin/api/2024-10/graphql.json`;
+
+function round2(v) {
+  return Math.round(v * 100) / 100;
+}
 
 async function shopifyGraphQL(query, variables = {}) {
   const accessToken = await getShopifyAccessToken();
@@ -31,6 +37,66 @@ async function shopifyGraphQL(query, variables = {}) {
   }
 
   return data.data;
+}
+
+// MARK: - Order Webhook Registration
+
+function orderWebhookCallbackUrl() {
+  if (!config.publicBaseUrl) {
+    throw new Error('PUBLIC_BASE_URL is not set; cannot register the order webhook.');
+  }
+  return `${config.publicBaseUrl}/webhooks/shopify/order-created`;
+}
+
+export async function listOrderWebhooks() {
+  const query = `#graphql
+    query {
+      webhookSubscriptions(first: 50, topics: [ORDERS_CREATE]) {
+        edges {
+          node {
+            id
+            endpoint {
+              __typename
+              ... on WebhookHttpEndpoint { callbackUrl }
+            }
+          }
+        }
+      }
+    }
+  `;
+  const data = await shopifyGraphQL(query);
+  return data.webhookSubscriptions.edges.map((edge) => ({
+    id: edge.node.id,
+    callbackUrl: edge.node.endpoint?.callbackUrl || null
+  }));
+}
+
+// Idempotently register the orders/create webhook pointing at this backend.
+export async function ensureOrderWebhook() {
+  const callbackUrl = orderWebhookCallbackUrl();
+  const existing = await listOrderWebhooks();
+  if (existing.some((w) => w.callbackUrl === callbackUrl)) {
+    return { created: false, callbackUrl };
+  }
+
+  const mutation = `#graphql
+    mutation Register($topic: WebhookSubscriptionTopic!, $sub: WebhookSubscriptionInput!) {
+      webhookSubscriptionCreate(topic: $topic, webhookSubscription: $sub) {
+        webhookSubscription { id }
+        userErrors { field message }
+      }
+    }
+  `;
+  const data = await shopifyGraphQL(mutation, {
+    topic: 'ORDERS_CREATE',
+    sub: { callbackUrl, format: 'JSON' }
+  });
+
+  const errors = data.webhookSubscriptionCreate?.userErrors || [];
+  if (errors.length) {
+    throw new Error(`Webhook registration failed: ${JSON.stringify(errors)}`);
+  }
+  return { created: true, callbackUrl };
 }
 
 async function fetchOrdersBetween(startIso, endIso) {
@@ -218,6 +284,53 @@ export async function fetchDailySalesItems(dateKey, timezone) {
       amount = subtotal > 0 ? subtotal : Math.max(total - tax, 0);
     }
 
+    // Build a per-line breakdown. Consignment (seller-tagged) lines only earn
+    // the store its commission; the seller keeps the rest. We surface both the
+    // gross price and the amount the store actually keeps so the day view can
+    // show the real store revenue rather than the full ticket price.
+    const lineBreakdown = [];
+    let sellerDeduction = 0;
+    let hasCommission = false;
+
+    for (const edge of lineItems) {
+      const node = edge?.node;
+      if (!node) continue;
+      const qty = Number(node.quantity || 1);
+      const unitPrice = Number(node.originalUnitPriceSet?.shopMoney?.amount || 0);
+      const gross = round2(unitPrice * qty);
+      const seller = matchSellerPrefix(node.name);
+
+      if (seller) {
+        hasCommission = true;
+        const commission = round2(gross * COMMISSION_RATE);
+        const sellerNet = round2(gross - commission);
+        sellerDeduction = round2(sellerDeduction + sellerNet);
+        lineBreakdown.push({
+          name: node.name || 'Item',
+          quantity: qty,
+          gross,
+          seller,
+          is_commission: true,
+          commission,
+          store_net: commission
+        });
+      } else {
+        lineBreakdown.push({
+          name: node.name || 'Item',
+          quantity: qty,
+          gross,
+          seller: null,
+          is_commission: false,
+          commission: 0,
+          store_net: gross
+        });
+      }
+    }
+
+    // Order-level store revenue: total minus what the sellers are owed. Kept in
+    // sync with the metrics deduction so the day view reconciles with the month.
+    const storeNet = round2(Math.max(0, amount - sellerDeduction));
+
     const description = names.length
       ? names.slice(0, 4).join(' • ')
       : 'Order';
@@ -229,6 +342,9 @@ export async function fetchDailySalesItems(dateKey, timezone) {
       description,
       quantity: totalQty > 0 ? totalQty : 1,
       amount,
+      store_net: storeNet,
+      has_commission: hasCommission,
+      line_items: lineBreakdown,
       order_name: order.name || null,
       source: 'shopify'
     });
@@ -236,21 +352,6 @@ export async function fetchDailySalesItems(dateKey, timezone) {
 
   items.sort((a, b) => String(b.sold_at).localeCompare(String(a.sold_at)));
   return items;
-}
-
-// MARK: - Seller Config
-
-const SELLER_PREFIXES = ['TA', 'AA'];
-const COMMISSION_RATE = 0.15;
-
-function parseSellerPrefix(itemName) {
-  if (!itemName) return null;
-  for (const prefix of SELLER_PREFIXES) {
-    if (itemName.startsWith(`${prefix} `) || itemName.startsWith(`${prefix}-`) || itemName.startsWith(`${prefix}:`)) {
-      return prefix;
-    }
-  }
-  return null;
 }
 
 // MARK: - Seller Deductions (for metrics adjustment)
@@ -269,7 +370,7 @@ export async function fetchSellerDeductionsMap(startDate, endDateExclusive, time
     for (const edge of lineItems) {
       const node = edge?.node;
       if (!node) continue;
-      const seller = parseSellerPrefix(node.name);
+      const seller = matchSellerPrefix(node.name);
       if (!seller) continue;
 
       const unitPrice = Number(node.originalUnitPriceSet?.shopMoney?.amount || 0);
@@ -291,7 +392,10 @@ export async function fetchSellerSales(monthKey, timezone) {
 
   const start = month.startOf('month');
   const end = month.endOf('month').plus({ days: 1 }).startOf('day');
-  const orders = await fetchOrdersWithLineItemsBetween(start.toISO(), end.toISO());
+  const [orders, paidIds] = await Promise.all([
+    fetchOrdersWithLineItemsBetween(start.toISO(), end.toISO()),
+    getPaidItemIds().catch(() => new Set())
+  ]);
 
   const sellerItems = [];
 
@@ -305,21 +409,23 @@ export async function fetchSellerSales(monthKey, timezone) {
       const node = edge?.node;
       if (!node) continue;
 
-      const seller = parseSellerPrefix(node.name);
+      const seller = matchSellerPrefix(node.name);
       if (!seller) continue;
 
       const unitPrice = Number(node.originalUnitPriceSet?.shopMoney?.amount || 0);
       const qty = Number(node.quantity || 1);
       const gross = unitPrice * qty;
+      const itemId = `${order.id}:${node.id}`;
 
       sellerItems.push({
-        id: `${order.id}:${node.id}`,
+        id: itemId,
         seller,
         item_name: node.name,
         quantity: qty,
-        gross: Math.round(gross * 100) / 100,
-        commission: Math.round(gross * COMMISSION_RATE * 100) / 100,
-        seller_net: Math.round(gross * (1 - COMMISSION_RATE) * 100) / 100,
+        gross: round2(gross),
+        commission: round2(gross * COMMISSION_RATE),
+        seller_net: round2(gross * (1 - COMMISSION_RATE)),
+        paid: paidIds.has(itemId),
         sold_at: soldAt,
         date: toDateKey(soldAt, timezone),
         order_name: order.name || null
@@ -327,17 +433,30 @@ export async function fetchSellerSales(monthKey, timezone) {
     }
   }
 
-  // Build per-seller summaries
+  // Build per-seller summaries, splitting what's owed into paid vs outstanding.
   const summaryMap = {};
   for (const prefix of SELLER_PREFIXES) {
-    summaryMap[prefix] = { seller: prefix, total_gross: 0, total_commission: 0, total_net: 0, item_count: 0 };
+    summaryMap[prefix] = {
+      seller: prefix,
+      total_gross: 0,
+      total_commission: 0,
+      total_net: 0,
+      total_paid: 0,
+      total_unpaid: 0,
+      item_count: 0
+    };
   }
 
   for (const item of sellerItems) {
     const s = summaryMap[item.seller];
-    s.total_gross = Math.round((s.total_gross + item.gross) * 100) / 100;
-    s.total_commission = Math.round((s.total_commission + item.commission) * 100) / 100;
-    s.total_net = Math.round((s.total_net + item.seller_net) * 100) / 100;
+    s.total_gross = round2(s.total_gross + item.gross);
+    s.total_commission = round2(s.total_commission + item.commission);
+    s.total_net = round2(s.total_net + item.seller_net);
+    if (item.paid) {
+      s.total_paid = round2(s.total_paid + item.seller_net);
+    } else {
+      s.total_unpaid = round2(s.total_unpaid + item.seller_net);
+    }
     s.item_count += item.quantity;
   }
 

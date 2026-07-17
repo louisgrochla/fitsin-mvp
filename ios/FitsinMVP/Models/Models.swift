@@ -163,6 +163,19 @@ struct ManualEntriesResponse: Codable {
     let updated_at: String
 }
 
+struct DayLineItem: Codable, Identifiable {
+    let name: String
+    let quantity: Int
+    let gross: Double
+    let seller: String?
+    let is_commission: Bool
+    let commission: Double
+    let store_net: Double
+
+    // Stable-enough id for ForEach within a single order's breakdown.
+    var id: String { "\(name)-\(quantity)-\(gross)" }
+}
+
 struct DaySaleItem: Codable, Identifiable {
     let id: String
     let kind: String
@@ -170,6 +183,9 @@ struct DaySaleItem: Codable, Identifiable {
     let description: String
     let quantity: Int
     let amount: Double?
+    let store_net: Double?
+    let has_commission: Bool?
+    let line_items: [DayLineItem]?
     let source: String?
     let note: String?
     let order_name: String?
@@ -209,6 +225,8 @@ struct SellerSummary: Codable, Identifiable {
     let total_gross: Double
     let total_commission: Double
     let total_net: Double
+    let total_paid: Double?
+    let total_unpaid: Double?
     let item_count: Int
 
     var id: String { seller }
@@ -222,6 +240,7 @@ struct SellerItem: Codable, Identifiable {
     let gross: Double
     let commission: Double
     let seller_net: Double
+    let paid: Bool?
     let sold_at: String
     let date: String
     let order_name: String?

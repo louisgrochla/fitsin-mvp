@@ -15,6 +15,7 @@
 		4ABD9E747ED062C7AA86279E /* StaffManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AD499F8257816251BAF0D /* StaffManagementView.swift */; };
 		4C455BD6F1F3DD6B483B41B4 /* UIApplication+TopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C7B22DB8242997A7D7669 /* UIApplication+TopViewController.swift */; };
 		4DEFD4CDA006BCF663D3FB23 /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951B64581E28F6C1E2FAF533 /* CalendarService.swift */; };
+		55B0814F4500CB3681452EF0 /* NotificationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8962E31997ACC2FABE382EB8 /* NotificationRouter.swift */; };
 		5A8DD9B19BBA7B59BC4B530C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2576245EFC0EDFAD179BF0F /* SettingsView.swift */; };
 		5F07DFE5DDEF02993A4CFFEA /* SellerSalesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44280C230615B917BBF8462 /* SellerSalesView.swift */; };
 		6018A9CC86EECF467CAC7A36 /* MonthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C71292C9025697C4973A1A /* MonthViewModel.swift */; };
@@ -70,6 +71,7 @@
 		67C9AA09A887DD3124955962 /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
 		72C71292C9025697C4973A1A /* MonthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthViewModel.swift; sourceTree = "<group>"; };
 		73D2AE412851CCD00E3B1C30 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		8962E31997ACC2FABE382EB8 /* NotificationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRouter.swift; sourceTree = "<group>"; };
 		949EEB13DA1B5F5D50A32868 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		951B64581E28F6C1E2FAF533 /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 		A787B438005D164BE2C446FB /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			children = (
 				18B23C6B286558379C054B81 /* AppDelegate.swift */,
 				390976B1D48E94CF82034690 /* FitsinMVPApp.swift */,
+				8962E31997ACC2FABE382EB8 /* NotificationRouter.swift */,
 				548C7B22DB8242997A7D7669 /* UIApplication+TopViewController.swift */,
 			);
 			path = App;
@@ -320,6 +323,7 @@
 				F74D4E10C3113820F307885E /* MonthHistoryViewModel.swift in Sources */,
 				7D73A567DD8B425F56005AC5 /* MonthView.swift in Sources */,
 				6018A9CC86EECF467CAC7A36 /* MonthViewModel.swift in Sources */,
+				55B0814F4500CB3681452EF0 /* NotificationRouter.swift in Sources */,
 				E8BE2AD902FE3CE743C2925B /* NotificationSettingsView.swift in Sources */,
 				B8F8D138BBBCAE77525682E8 /* PinLockView.swift in Sources */,
 				92091D7E945144579E5956FD /* PinPadView.swift in Sources */,

@@ -63,11 +63,11 @@ struct SellerSalesView: View {
         }
         .navigationTitle("Seller Sales")
         .task {
-            await vm.load()
             animateIn = false
             withAnimation(.easeOut(duration: 0.4)) {
                 animateIn = true
             }
+            await vm.load()
         }
     }
 
@@ -141,6 +141,8 @@ struct SellerSalesView: View {
         let totalCommission = summaries.reduce(0) { $0 + $1.total_commission }
         let totalNet = summaries.reduce(0) { $0 + $1.total_net }
         let totalItems = summaries.reduce(0) { $0 + $1.item_count }
+        let totalPaid = summaries.reduce(0) { $0 + ($1.total_paid ?? 0) }
+        let totalOutstanding = summaries.reduce(0) { $0 + ($1.total_unpaid ?? max(0, $1.total_net)) }
 
         return VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -182,6 +184,33 @@ struct SellerSalesView: View {
                 .frame(maxWidth: .infinity)
             }
             .padding(.vertical, 20)
+
+            HStack(spacing: 0) {
+                VStack(spacing: 2) {
+                    Text("PAID OUT")
+                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .tracking(0.8)
+                        .foregroundStyle(BrandTheme.inkSoft)
+                    Text(gbp(totalPaid))
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(BrandTheme.success)
+                }
+                .frame(maxWidth: .infinity)
+
+                Divider().frame(height: 24).overlay(BrandTheme.divider)
+
+                VStack(spacing: 2) {
+                    Text("STILL OWED")
+                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .tracking(0.8)
+                        .foregroundStyle(BrandTheme.inkSoft)
+                    Text(gbp(totalOutstanding))
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(BrandTheme.danger)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .padding(.bottom, 10)
 
             HStack {
                 Spacer()
@@ -234,12 +263,24 @@ struct SellerSalesView: View {
                             Divider().overlay(BrandTheme.divider).padding(.horizontal, 20)
                         }
 
+                        let isPaid = item.paid ?? false
+
                         HStack(spacing: 10) {
+                            Button {
+                                Task { await vm.setPaid(item, paid: !isPaid) }
+                            } label: {
+                                Image(systemName: isPaid ? "checkmark.circle.fill" : "circle")
+                                    .font(.system(size: 22))
+                                    .foregroundStyle(isPaid ? BrandTheme.success : BrandTheme.inkSoft.opacity(0.5))
+                            }
+                            .buttonStyle(.plain)
+
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(cleanItemName(item.item_name))
                                     .font(.system(size: 13, weight: .semibold))
                                     .foregroundStyle(BrandTheme.ink)
                                     .lineLimit(1)
+                                    .strikethrough(isPaid, color: BrandTheme.inkSoft)
                                 HStack(spacing: 6) {
                                     Text(item.seller)
                                         .font(.system(size: 10, weight: .bold, design: .rounded))
@@ -250,22 +291,31 @@ struct SellerSalesView: View {
                                     Text(formatDate(item.sold_at))
                                         .font(.system(size: 11))
                                         .foregroundStyle(BrandTheme.inkSoft)
+                                    if isPaid {
+                                        Text("PAID")
+                                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                                            .padding(.horizontal, 5)
+                                            .padding(.vertical, 1)
+                                            .background(Capsule().fill(BrandTheme.success.opacity(0.15)))
+                                            .foregroundStyle(BrandTheme.success)
+                                    }
                                 }
                             }
 
                             Spacer()
 
                             VStack(alignment: .trailing, spacing: 2) {
-                                Text(gbp(item.gross))
+                                Text(gbp(item.seller_net))
                                     .font(.system(size: 14, weight: .bold, design: .rounded))
                                     .foregroundStyle(BrandTheme.ink)
-                                Text("\(gbp(item.commission)) fee")
+                                Text("owed · \(gbp(item.gross)) sold")
                                     .font(.system(size: 10))
-                                    .foregroundStyle(BrandTheme.success)
+                                    .foregroundStyle(BrandTheme.inkSoft)
                             }
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
+                        .opacity(isPaid ? 0.6 : 1)
                     }
                 }
             }

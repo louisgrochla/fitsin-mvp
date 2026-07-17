@@ -6,6 +6,7 @@ struct RootTabView: View {
     @StateObject private var monthVM = MonthViewModel()
     @StateObject private var eventsVM = EventsViewModel()
     @StateObject private var rotaVM = RotaViewModel()
+    @StateObject private var router = NotificationRouter.shared
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -50,6 +51,23 @@ struct RootTabView: View {
                 }
         }
         .tint(BrandTheme.ink)
+        .sheet(item: $router.pending) { link in
+            NavigationStack {
+                Group {
+                    switch link {
+                    case .day(let date):
+                        DaySalesView(date: date)
+                    case .seller:
+                        SellerSalesView()
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") { router.pending = nil }
+                    }
+                }
+            }
+        }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
                 Task {

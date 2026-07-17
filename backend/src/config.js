@@ -22,7 +22,12 @@ export const config = {
   port: Number(process.env.PORT || 3000),
   timezone: process.env.TZ || 'Europe/London',
   sharedCode: process.env.APP_SHARED_CODE || 'test-code',
+  // Persistent data directory (mounted disk in production). Empty = use cwd.
+  dataDir: process.env.DATA_DIR || '',
+  // Public URL of this backend, used when registering the Shopify webhook.
+  publicBaseUrl: (process.env.PUBLIC_BASE_URL || '').replace(/\/+$/, ''),
   manualEntriesFile: process.env.MANUAL_ENTRIES_FILE || '.manual-entries.json',
+  sellerPayoutsFile: process.env.SELLER_PAYOUTS_FILE || '.seller-payouts.json',
   rotaFile: process.env.ROTA_FILE || '.rota.json',
   shopify: {
     domain: (process.env.SHOPIFY_STORE_DOMAIN || 'example.myshopify.com')

@@ -2,3 +2,6 @@ backend/node_modules/
 backend/.env
 backend/.shopify-token.json
 .DS_Store
+
+# Xcode build artifacts
+ios/build/

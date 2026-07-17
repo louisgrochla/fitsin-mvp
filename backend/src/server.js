@@ -11,10 +11,13 @@ import { hasShopifyAccessToken } from './services/shopifyTokenStore.js';
 import { currentMonthKey, getMonthGoal, setMonthGoal } from './services/monthGoals.js';
 import { createManualEntry, deleteManualEntry, listManualEntries } from './services/manualEntries.js';
 import { getRotaEntries, addRotaEntry, removeRotaEntry, getSchedules, setSchedule, getScheduleForUser } from './services/rota.js';
-import { fetchDailySalesItems, fetchSellerSales } from './services/shopify.js';
-import { registerDevice, updatePreferences, removeDevice, getAllDevices } from './services/pushDevices.js';
-import { sendPush, sendPushToPreference, sendPushToSeller, sendPushToDevice } from './services/push.js';
-import { getRotaEntries as getRotaEntriesForPush } from './services/rota.js';
+import { fetchDailySalesItems, fetchSellerSales, ensureOrderWebhook, listOrderWebhooks } from './services/shopify.js';
+import { setSellerItemPaid } from './services/sellerPayouts.js';
+import { registerDevice, updatePreferences, removeDevice, getAllDevices, getDevice } from './services/pushDevices.js';
+import { sendPushToPreference, sendPushToSeller } from './services/push.js';
+import { COMMISSION_RATE, matchSellerPrefix } from './services/sellerConfig.js';
+import { sendDailySummary, sendRotaReminders } from './services/pushJobs.js';
+import { startScheduler } from './services/scheduler.js';
 import { TTLCache } from './utils/cache.js';
 import { DateTime } from 'luxon';
 
@@ -23,9 +26,6 @@ const cache = new TTLCache();
 const oauthStateCache = new TTLCache();
 const ttlMs = config.cacheTtlSeconds * 1000;
 const staleMaxMs = config.staleCacheMaxAgeSeconds * 1000;
-
-const SELLER_PREFIXES_PUSH = ['TA', 'AA'];
-const COMMISSION_RATE_PUSH = 0.15;
 
 app.use(helmet({ hsts: config.nodeEnv === 'production' }));
 
@@ -49,8 +49,15 @@ app.post('/webhooks/shopify/order-created', express.raw({ type: 'application/jso
     // Calculate order total (store revenue)
     const orderTotal = Number(order.subtotal_price || order.total_price || 0);
     const orderName = order.name || '';
-    const itemNames = lineItems.map((li) => li.title || li.name).filter(Boolean);
-    const description = itemNames.slice(0, 3).join(' • ') || 'Order';
+
+    // London date the sale belongs to — used so tapping the notification opens
+    // the correct day's sales page in the app.
+    const saleDate = order.created_at
+      ? DateTime.fromISO(order.created_at, { zone: config.timezone }).toFormat('yyyy-LL-dd')
+      : DateTime.now().setZone(config.timezone).toFormat('yyyy-LL-dd');
+
+    // Total quantity across all lines (multi-item orders show the count).
+    const itemCount = lineItems.reduce((sum, li) => sum + Number(li.quantity || 1), 0);
 
     // Check for seller items and calculate deductions
     let sellerDeduction = 0;
@@ -58,33 +65,43 @@ app.post('/webhooks/shopify/order-created', express.raw({ type: 'application/jso
 
     for (const li of lineItems) {
       const name = li.title || li.name || '';
-      for (const prefix of SELLER_PREFIXES_PUSH) {
-        if (name.startsWith(`${prefix} `) || name.startsWith(`${prefix}-`) || name.startsWith(`${prefix}:`)) {
-          const gross = Number(li.price || 0) * Number(li.quantity || 1);
-          const sellerNet = gross * (1 - COMMISSION_RATE_PUSH);
-          sellerDeduction += sellerNet;
-          sellerItems.push({ prefix, name, gross, sellerNet, commission: gross * COMMISSION_RATE_PUSH });
-          break;
-        }
-      }
+      const prefix = matchSellerPrefix(name);
+      if (!prefix) continue;
+      const gross = Number(li.price || 0) * Number(li.quantity || 1);
+      const sellerNet = gross * (1 - COMMISSION_RATE);
+      sellerDeduction += sellerNet;
+      sellerItems.push({ prefix, name, gross, sellerNet, commission: gross * COMMISSION_RATE });
     }
 
+    // Store's take. For consignment items this is only the 15% commission, so
+    // the general audience never sees an inflated "we earned £100" figure.
     const storeRevenue = Math.max(0, orderTotal - sellerDeduction);
+    const hasCommission = sellerItems.length > 0;
 
-    // Send "new sale" notification to all who want it
+    // Compressed "new sale" copy for everyone with new_sale on. We deliberately
+    // avoid listing item names — just how many sold and the store's net.
     const gbp = (v) => `£${Number(v).toFixed(2)}`;
+    let body;
+    if (itemCount > 1) {
+      body = `${itemCount} items sold — ${gbp(storeRevenue)}`;
+    } else {
+      body = `Something sold — ${gbp(storeRevenue)}`;
+    }
+    if (hasCommission) body += ' · consignment';
+
     await sendPushToPreference('new_sale', {
       title: 'New Sale',
-      body: `${gbp(storeRevenue)} — ${description}`,
-      data: { type: 'new_sale', order_name: orderName }
+      body,
+      data: { type: 'new_sale', order_name: orderName, date: saleDate }
     });
 
-    // Send seller-specific notifications
+    // Send seller-specific notifications: the seller sees what they earn (after
+    // commission) alongside the full sale price before commission.
     for (const si of sellerItems) {
       await sendPushToSeller(si.prefix, {
         title: 'Your Sale',
-        body: `${si.name} — ${gbp(si.gross)} (you earn ${gbp(si.sellerNet)})`,
-        data: { type: 'commission_sale', prefix: si.prefix }
+        body: `${gbp(si.sellerNet)} to you — sold for ${gbp(si.gross)}`,
+        data: { type: 'commission_sale', prefix: si.prefix, date: saleDate }
       });
     }
 
@@ -127,6 +144,16 @@ app.get('/auth/shopify/callback', async (req, res) => {
 
     const rawQuery = req.originalUrl.includes('?') ? req.originalUrl.split('?')[1] : '';
     const result = await exchangeCodeForOfflineToken(req.query, state, rawQuery);
+
+    // Register the orders/create webhook now that we hold a token. Non-fatal:
+    // the connection still succeeds even if webhook setup can't complete.
+    try {
+      const hook = await ensureOrderWebhook();
+      console.log(`[shopify] order webhook ${hook.created ? 'created' : 'already present'} → ${hook.callbackUrl}`);
+    } catch (hookError) {
+      console.error('[shopify] webhook registration failed:', hookError.message);
+    }
+
     return res.status(200).send(
       `Shopify connected successfully for ${result.shop}. You can return to the fit'sin app setup.`
     );
@@ -141,6 +168,26 @@ app.get('/auth/shopify/status', async (_req, res) => {
     connected,
     shop: config.shopify.domain
   });
+});
+
+// Idempotently (re)register the orders/create webhook. Useful for stores that
+// connected before webhook auto-registration existed, or after a URL change.
+app.post('/v1/shopify/register-webhook', async (_req, res) => {
+  try {
+    const result = await ensureOrderWebhook();
+    return res.json({ ok: true, ...result });
+  } catch (error) {
+    return res.status(400).json({ error: 'Failed to register webhook', detail: error.message });
+  }
+});
+
+app.get('/v1/shopify/webhooks', async (_req, res) => {
+  try {
+    const webhooks = await listOrderWebhooks();
+    return res.json({ webhooks });
+  } catch (error) {
+    return res.status(400).json({ error: 'Failed to list webhooks', detail: error.message });
+  }
 });
 
 async function cached(key, producer) {
@@ -276,6 +323,9 @@ app.get('/v1/day', async (req, res) => {
         description: entry.description || `${entry.source} sale`,
         quantity: 1,
         amount: Number(entry.amount || 0),
+        store_net: Number(entry.amount || 0),
+        has_commission: false,
+        line_items: [],
         source: entry.source,
         note: entry.note || null,
         order_name: null
@@ -381,6 +431,24 @@ app.get('/v1/sellers', async (req, res) => {
   }
 });
 
+// Toggle whether a consignment seller line item has been paid out. Shared state
+// via the persistent disk so every device sees the same paid/unpaid status.
+app.put('/v1/sellers/paid', async (req, res) => {
+  try {
+    const itemId = req.body?.item_id;
+    const paid = req.body?.paid;
+    if (!itemId) {
+      return res.status(400).json({ error: 'item_id is required' });
+    }
+    const result = await setSellerItemPaid(itemId, Boolean(paid), req.body?.by || null);
+    // Bust seller caches so the next fetch reflects the new paid state.
+    cache.clear();
+    return res.json({ ...result, updated_at: new Date().toISOString() });
+  } catch (error) {
+    return res.status(400).json({ error: 'Failed to update payout status', detail: error.message });
+  }
+});
+
 // ── Rota ──────────────────────────────────────────────
 
 app.get('/v1/rota', async (req, res) => {
@@ -447,6 +515,18 @@ app.get('/v1/devices', async (req, res) => {
   }
 });
 
+app.get('/v1/devices/:token', async (req, res) => {
+  try {
+    const device = await getDevice(req.params.token);
+    if (!device) {
+      return res.status(404).json({ error: 'Device not found' });
+    }
+    return res.json(device);
+  } catch (error) {
+    return res.status(400).json({ error: 'Failed to load device', detail: error.message });
+  }
+});
+
 app.post('/v1/devices', async (req, res) => {
   try {
     const device = await registerDevice(req.body);
@@ -476,47 +556,20 @@ app.delete('/v1/devices/:token', async (req, res) => {
 
 // ── Push Triggers (called by cron jobs) ───────────────
 
-app.post('/v1/push/daily-summary', async (req, res) => {
+app.post('/v1/push/daily-summary', async (_req, res) => {
   try {
-    const metrics = await computeTodayMetrics();
-    const gbp = (v) => `£${Number(v).toFixed(2)}`;
-    const pct = metrics.pct > 0 ? `${Math.round(metrics.pct)}%` : '0%';
-
-    await sendPushToPreference('daily_summary', {
-      title: 'Daily Summary',
-      body: `Today: ${gbp(metrics.actual_today)} / ${gbp(metrics.target_today)} (${pct})`,
-      data: { type: 'daily_summary' }
-    });
-
-    return res.json({ ok: true, sent: true });
+    const result = await sendDailySummary();
+    return res.json({ ok: true, ...result });
   } catch (error) {
     console.error('[push] daily-summary error:', error);
     return res.status(500).json({ error: 'Failed to send daily summary', detail: error.message });
   }
 });
 
-app.post('/v1/push/rota-reminder', async (req, res) => {
+app.post('/v1/push/rota-reminder', async (_req, res) => {
   try {
-    const tomorrow = DateTime.now().setZone(config.timezone).plus({ days: 1 });
-    const tomorrowKey = tomorrow.toFormat('yyyy-LL-dd');
-
-    // Skip Sundays
-    if (tomorrow.weekday === 7) {
-      return res.json({ ok: true, skipped: 'sunday' });
-    }
-
-    const entries = await getRotaEntriesForPush(tomorrowKey, tomorrowKey, config.timezone);
-    const dayLabel = tomorrow.toFormat('EEEE');
-
-    for (const entry of entries) {
-      await sendPushToDevice(entry.name, {
-        title: 'Opening Reminder',
-        body: `You're opening the store tomorrow (${dayLabel}) at 12`,
-        data: { type: 'rota_reminder', date: tomorrowKey }
-      });
-    }
-
-    return res.json({ ok: true, reminded: entries.length });
+    const result = await sendRotaReminders();
+    return res.json({ ok: true, ...result });
   } catch (error) {
     console.error('[push] rota-reminder error:', error);
     return res.status(500).json({ error: 'Failed to send rota reminders', detail: error.message });
@@ -530,4 +583,5 @@ app.use((err, _req, res, _next) => {
 
 app.listen(config.port, () => {
   console.log(`fit'sin backend listening on :${config.port}`);
+  startScheduler();
 });

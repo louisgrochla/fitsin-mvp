@@ -69,11 +69,11 @@ struct MonthView: View {
             }
             .task {
                 vm.loadCached()
-                await vm.load()
                 animateIn = false
                 withAnimation(.easeOut(duration: 0.4)) {
                     animateIn = true
                 }
+                await vm.load()
                 vm.startAutoRefresh(intervalSeconds: 60)
             }
             .onDisappear { vm.stopAutoRefresh() }

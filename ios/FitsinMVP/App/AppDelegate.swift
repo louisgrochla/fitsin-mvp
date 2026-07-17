@@ -53,5 +53,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
-    ) async {}
+    ) async {
+        let userInfo = response.notification.request.content.userInfo
+        await NotificationRouter.shared.handle(userInfo)
+    }
 }

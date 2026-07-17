@@ -73,11 +73,11 @@ struct EventsView: View {
             .toolbarColorScheme(.light, for: .navigationBar)
             .task {
                 vm.loadCached()
-                await vm.load()
                 animateIn = false
                 withAnimation(.easeOut(duration: 0.4)) {
                     animateIn = true
                 }
+                await vm.load()
             }
             .sheet(isPresented: $showAddEvent) {
                 AddEventView(selectedDate: vm.selectedDate ?? Date()) { _ in

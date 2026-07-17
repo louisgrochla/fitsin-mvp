@@ -10,8 +10,18 @@ struct TodayView: View {
     @State private var manualAmount = ""
     @State private var manualNote = ""
     @State private var manualDescription = ""
+    @State private var manualDate = Date()
     @State private var showManualEntry = false
     @State private var showSchedule = false
+    @FocusState private var amountFocused: Bool
+
+    private static let manualDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.timeZone = TimeZone(identifier: "Europe/London")
+        f.locale = Locale(identifier: "en_GB")
+        return f
+    }()
 
     private static let gbpFormatter: NumberFormatter = {
         let f = NumberFormatter()
@@ -84,15 +94,17 @@ struct TodayView: View {
             }
             .task {
                 vm.loadCached()
+                // Fade the content (spinner or cached data) in immediately so the
+                // loading state is visible while the network fetch is in flight.
+                animateIn = false
+                withAnimation(.easeOut(duration: 0.4)) {
+                    animateIn = true
+                }
                 let userName = session.userName ?? ""
                 async let loadToday: Void = vm.load()
                 async let loadRota: Void = rotaVM.load()
                 async let loadSched: Void = rotaVM.loadSchedule(userName: userName)
                 _ = await (loadToday, loadRota, loadSched)
-                animateIn = false
-                withAnimation(.easeOut(duration: 0.4)) {
-                    animateIn = true
-                }
                 vm.startAutoRefresh(intervalSeconds: 60)
             }
             .onDisappear { vm.stopAutoRefresh() }
@@ -508,6 +520,28 @@ struct TodayView: View {
                 .keyboardType(.decimalPad)
                 .textInputAutocapitalization(.never)
                 .textFieldStyle(FitsinInputStyle())
+                .focused($amountFocused)
+
+            HStack {
+                Text("Date of sale")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(BrandTheme.inkSoft)
+                Spacer()
+                DatePicker(
+                    "",
+                    selection: $manualDate,
+                    in: ...Date(),
+                    displayedComponents: .date
+                )
+                .labelsHidden()
+                .datePickerStyle(.compact)
+            }
+
+            if !Calendar.current.isDateInToday(manualDate) {
+                Text("Backdated — counts toward \(Self.manualDateFormatter.string(from: manualDate))")
+                    .font(.caption2)
+                    .foregroundStyle(BrandTheme.accent)
+            }
 
             if selectedSource == .other {
                 TextField("Brief description", text: $manualDescription)
@@ -522,16 +556,21 @@ struct TodayView: View {
             Button {
                 guard let amount = parseAmount(manualAmount) else { return }
                 let description = selectedSource == .other ? manualDescription.trimmingCharacters(in: .whitespacesAndNewlines) : nil
+                let dateString = Self.manualDateFormatter.string(from: manualDate)
                 Task {
                     await vm.addManualEntry(
                         amount: amount,
                         source: selectedSource,
                         description: description?.isEmpty == true ? nil : description,
-                        note: manualNote.trimmingCharacters(in: .whitespacesAndNewlines)
+                        note: manualNote.trimmingCharacters(in: .whitespacesAndNewlines),
+                        date: dateString
                     )
+                    // Clear only the per-sale fields; keep source + date so a run
+                    // of same-day sales can be logged rapidly. Refocus the amount.
                     manualAmount = ""
                     manualNote = ""
                     manualDescription = ""
+                    amountFocused = true
                 }
             } label: {
                 HStack {

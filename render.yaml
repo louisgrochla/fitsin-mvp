@@ -4,6 +4,10 @@ services:
     runtime: docker
     rootDir: backend
     plan: starter
+    disk:
+      name: fitsin-data
+      mountPath: /data
+      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
@@ -11,7 +15,11 @@ services:
         value: Europe/London
       - key: PORT
         value: 3000
+      - key: DATA_DIR
+        value: /data
       - key: APP_SHARED_CODE
+        sync: false
+      - key: PUBLIC_BASE_URL
         sync: false
       - key: SHOPIFY_STORE_DOMAIN
         sync: false
@@ -44,6 +52,6 @@ services:
       - key: APNS_BUNDLE_ID
         value: com.fitsin.mvp
       - key: APNS_PRODUCTION
-        value: "false"
+        value: "true"
       - key: SHOPIFY_API_SECRET
         sync: false

@@ -97,14 +97,16 @@ final class APIClient {
         amount: Double,
         source: ManualSource,
         description: String?,
-        note: String?
+        note: String?,
+        date: String? = nil
     ) async throws -> ManualEntry {
-        let payload: [String: Any] = [
+        var payload: [String: Any] = [
             "amount": amount,
             "source": source.rawValue,
             "description": (description?.isEmpty == false ? description as Any : NSNull()),
             "note": (note?.isEmpty == false ? note as Any : NSNull())
         ]
+        if let date, !date.isEmpty { payload["date"] = date }
         let body = try JSONSerialization.data(withJSONObject: payload, options: [])
         return try await fetch(ManualEntry.self, path: "/v1/manual-entries", method: "POST", body: body)
     }
@@ -147,6 +149,11 @@ final class APIClient {
         _ = try await fetch(EmptyResponse.self, path: "/v1/devices", method: "POST", body: body)
     }
 
+    func getDevice(token: String) async throws -> DeviceResponse {
+        let encoded = token.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? token
+        return try await fetch(DeviceResponse.self, path: "/v1/devices/\(encoded)")
+    }
+
     func updateDevicePreferences(token: String, preferences: [String: Any]) async throws {
         let payload: [String: Any] = ["token": token, "preferences": preferences]
         let body = try JSONSerialization.data(withJSONObject: payload, options: [])
@@ -163,6 +170,15 @@ final class APIClient {
     func getSellerSales(month: String) async throws -> SellerSalesResponse {
         let encoded = month.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? month
         return try await fetch(SellerSalesResponse.self, path: "/v1/sellers?month=\(encoded)")
+    }
+
+    // Mark a consignment seller line item as paid / unpaid. Shared across every
+    // device via the backend, so payout status stays consistent for the team.
+    func setSellerItemPaid(itemId: String, paid: Bool, by: String? = nil) async throws {
+        var payload: [String: Any] = ["item_id": itemId, "paid": paid]
+        if let by, !by.isEmpty { payload["by"] = by }
+        let body = try JSONSerialization.data(withJSONObject: payload, options: [])
+        _ = try await fetch(EmptyResponse.self, path: "/v1/sellers/paid", method: "PUT", body: body)
     }
 
     // MARK: - Rota
@@ -195,3 +211,24 @@ final class APIClient {
 }
 
 private struct EmptyResponse: Decodable {}
+
+struct DeviceResponse: Decodable {
+    let name: String?
+    let preferences: DevicePreferences
+
+    struct DevicePreferences: Decodable {
+        let newSale: Bool
+        let myCommissionSale: Bool
+        let dailySummary: Bool
+        let rotaReminder: Bool
+        let sellerPrefix: String?
+
+        enum CodingKeys: String, CodingKey {
+            case newSale = "new_sale"
+            case myCommissionSale = "my_commission_sale"
+            case dailySummary = "daily_summary"
+            case rotaReminder = "rota_reminder"
+            case sellerPrefix = "seller_prefix"
+        }
+    }
+}

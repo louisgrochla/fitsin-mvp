@@ -1,21 +1,11 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 import { config } from '../config.js';
+import { readJsonFile, writeJsonFile } from '../utils/storage.js';
 
 let memoizedToken = config.shopify.token || '';
 
-function tokenFilePath() {
-  return path.resolve(process.cwd(), config.shopify.tokenFile);
-}
-
 async function readTokenFile() {
-  try {
-    const raw = await fs.readFile(tokenFilePath(), 'utf8');
-    const data = JSON.parse(raw);
-    return data.access_token || '';
-  } catch {
-    return '';
-  }
+  const data = await readJsonFile(config.shopify.tokenFile, null);
+  return data?.access_token || '';
 }
 
 export async function getShopifyAccessToken() {
@@ -27,13 +17,12 @@ export async function getShopifyAccessToken() {
 
 export async function persistShopifyAccessToken({ accessToken, shop, scope }) {
   memoizedToken = accessToken;
-  const payload = {
+  await writeJsonFile(config.shopify.tokenFile, {
     shop,
     scope,
     access_token: accessToken,
     updated_at: new Date().toISOString()
-  };
-  await fs.writeFile(tokenFilePath(), JSON.stringify(payload, null, 2), 'utf8');
+  });
 }
 
 export async function hasShopifyAccessToken() {

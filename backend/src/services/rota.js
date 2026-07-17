@@ -1,33 +1,22 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 import crypto from 'node:crypto';
 import { DateTime } from 'luxon';
 import { config } from '../config.js';
-
-function filePath() {
-  return path.resolve(process.cwd(), config.rotaFile);
-}
+import { readJsonFile, writeJsonFile } from '../utils/storage.js';
 
 async function readStore() {
-  try {
-    const raw = await fs.readFile(filePath(), 'utf8');
-    const parsed = JSON.parse(raw);
-    return {
-      entries: Array.isArray(parsed?.entries) ? parsed.entries : [],
-      schedules: Array.isArray(parsed?.schedules) ? parsed.schedules : []
-    };
-  } catch {
-    return { entries: [], schedules: [] };
-  }
+  const parsed = await readJsonFile(config.rotaFile, null);
+  return {
+    entries: Array.isArray(parsed?.entries) ? parsed.entries : [],
+    schedules: Array.isArray(parsed?.schedules) ? parsed.schedules : []
+  };
 }
 
 async function writeStore(store) {
-  const payload = {
+  await writeJsonFile(config.rotaFile, {
     entries: store.entries,
     schedules: store.schedules,
     updated_at: new Date().toISOString()
-  };
-  await fs.writeFile(filePath(), JSON.stringify(payload, null, 2), 'utf8');
+  });
 }
 
 function parseDate(dateStr, timezone) {

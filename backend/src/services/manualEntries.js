@@ -1,35 +1,24 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 import crypto from 'node:crypto';
 import { DateTime } from 'luxon';
 import { config } from '../config.js';
+import { readJsonFile, writeJsonFile } from '../utils/storage.js';
 
 const VALID_SOURCES = new Set(['vinted', 'website', 'cash', 'other']);
-
-function filePath() {
-  return path.resolve(process.cwd(), config.manualEntriesFile);
-}
 
 function round2(v) {
   return Math.round(v * 100) / 100;
 }
 
 async function readAll() {
-  try {
-    const raw = await fs.readFile(filePath(), 'utf8');
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed?.entries) ? parsed.entries : [];
-  } catch {
-    return [];
-  }
+  const parsed = await readJsonFile(config.manualEntriesFile, null);
+  return Array.isArray(parsed?.entries) ? parsed.entries : [];
 }
 
 async function writeAll(entries) {
-  const payload = {
+  await writeJsonFile(config.manualEntriesFile, {
     entries,
     updated_at: new Date().toISOString()
-  };
-  await fs.writeFile(filePath(), JSON.stringify(payload, null, 2), 'utf8');
+  });
 }
 
 function parseDateOrToday(dateStr, timezone) {

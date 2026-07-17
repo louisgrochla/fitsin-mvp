@@ -1,28 +1,17 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 import crypto from 'node:crypto';
 import { config } from '../config.js';
-
-function filePath() {
-  return path.resolve(process.cwd(), config.pushDevicesFile);
-}
+import { readJsonFile, writeJsonFile } from '../utils/storage.js';
 
 async function readAll() {
-  try {
-    const raw = await fs.readFile(filePath(), 'utf8');
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed?.devices) ? parsed.devices : [];
-  } catch {
-    return [];
-  }
+  const parsed = await readJsonFile(config.pushDevicesFile, null);
+  return Array.isArray(parsed?.devices) ? parsed.devices : [];
 }
 
 async function writeAll(devices) {
-  const payload = {
+  await writeJsonFile(config.pushDevicesFile, {
     devices,
     updated_at: new Date().toISOString()
-  };
-  await fs.writeFile(filePath(), JSON.stringify(payload, null, 2), 'utf8');
+  });
 }
 
 export async function registerDevice(input) {
@@ -97,6 +86,13 @@ export async function removeDevice(token) {
 
 export async function getAllDevices() {
   return readAll();
+}
+
+export async function getDevice(token) {
+  const tokenStr = String(token || '').trim();
+  if (!tokenStr) return null;
+  const devices = await readAll();
+  return devices.find((d) => d.token === tokenStr) || null;
 }
 
 export async function getDevicesWithPreference(prefKey) {
