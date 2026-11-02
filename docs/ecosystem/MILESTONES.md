@@ -2,6 +2,12 @@
 
 All product ideas are retained. Only F0 is implemented in this session. “Existing” means source/test evidence at the synchronised commits; it does not assert live deployment or hardware success. Every other slice requires its feature/release gate. Cross-seller access, paid services, publishing, delisting, migrations and notifications are not implicitly authorised by this plan.
 
+## Current owner decisions — 2 November 2026
+
+Initial audience: one existing Crosstopher seller/business, with multiple people sharing access to all of its data in both applications. Preserve Crosstopher as it operates today. Per-person seller restrictions and multi-seller expansion are deferred; preserve existing server-side seller boundaries. I1's audience question is resolved for this phase, while bridge authentication and exact source-account bindings remain implementation work.
+
+Batch Mac/Xcode/device/manual verification at the end of the intended changes. Continue authorised cloud slices and their automated checks before that batch. Native acceptance remains required before release readiness, and every new feature keeps its gate.
+
 ## Reviewable slices
 
 | ID / gate | Existing capability → required work | Dependencies | Acceptance and verification | Owner decision |

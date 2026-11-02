@@ -60,3 +60,11 @@ Independent review resumed from Fitsin `05b5f76` and Crosstopher `abff581` on th
 - Native/device: no new evidence. Four Swift regression tests remain authored but unrun. All Xcode, simulator, iPhone, APNs, accessibility and shop hardware checks remain pending. Release-ready remains **false**.
 
 Changes are intended for the same draft PRs. No merge, deployment, live integration action or new feature approval is included.
+
+## Owner direction — shared business and final local validation batch
+
+The owner clarified on 2 November 2026 that Mac/Xcode/device/manual checks should happen at the end of the change set so cloud work can continue while local testing is unavailable. Do not stop each cloud slice for local verification. Keep all unexecuted checks visible and require them before release readiness; merge and deployment remain unauthorised.
+
+Initial scope is one existing Crosstopher seller/business with multiple people sharing access to all its data, across Crosstopher and Fitsin MVP. Preserve Crosstopher's current operation. Per-person seller permissions and multi-seller product expansion are deferred; do not merge/reassign existing seller data or weaken foreign-seller boundaries. The initial audience decision is settled. Exact external account bindings and secure server-side bridge configuration remain technical work, rather than reasons to ask the same audience question again.
+
+Continue the authorised foundation work in cloud, recording tests per slice. New ecosystem features retain their individual gates; this direction does not approve the entire backlog. The final local checklist is a batched acceptance step, not the next blocker to cloud progress.

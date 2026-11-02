@@ -1,6 +1,6 @@
 # Proposed integration contracts — design only
 
-No bridge, new endpoint, ledger, account mapping or visibility change is implemented. Names below are proposed contracts, not assertions about existing APIs. Gate 2 must approve identity and ownership before Gate 4 can expose summaries. Keep both applications initially.
+No bridge, new endpoint, ledger, account mapping or visibility change is implemented. Names below are proposed contracts, not assertions about existing APIs. The owner has approved the initial shared single-seller audience below. Source-account binding and bridge authentication still need implementation before summaries can be exposed. Keep both applications initially.
 
 ## Ownership and authority
 
@@ -14,6 +14,16 @@ No bridge, new endpoint, ledger, account mapping or visibility change is impleme
 | Cross-app summary | Derived, read-only | Each section carries its own source revision/freshness; never the authority for stock or payments. |
 
 ## Identity and visibility
+
+### Approved initial scope — 2 November 2026
+
+One existing Crosstopher seller represents the business for this phase. Multiple people have access to all of that business's data in Crosstopher and Fitsin MVP; do not build per-person stock, sales or earnings visibility restrictions for this phase. Preserve Crosstopher as it currently operates. This is a shared audience decision, not a request to combine existing seller records, reassign garments, remove seller scoping, change marketplace credentials or grant public access.
+
+For a future bridge, bind the existing seller on the server and retain authenticated access. Staff names/local PINs need not become distinct seller accounts. Keep source-account mapping separate from staff identity and do not infer it from initials. Foreign-seller isolation tests remain useful boundary tests even though the deployed initial audience uses one seller. Multi-seller product work is deferred.
+
+Mac/Xcode/device/manual checks are batched at the end of the intended change set. Continue authorised cloud implementation and verification before that batch; native checks are not a prerequisite for each cloud slice. Release readiness still requires that final native/device pass. Feature gates remain explicit: this scope decision does not approve the whole candidate catalogue.
+
+### Boundary requirements
 
 An authenticated principal resolves server-side to allowed seller IDs and source accounts. Default remains one seller, no cross-seller view. A future owner aggregate requires explicit permission and specification changes to PROJECT.md, not use of the shared Fitsin code as a superuser credential. Map seller → source account → POS enrolment separately; initials, user display names, SKU text and notification preferences are not authorisation. Unknown ownership remains unknown.
 
