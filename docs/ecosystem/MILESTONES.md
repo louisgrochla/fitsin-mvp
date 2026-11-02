@@ -4,6 +4,10 @@ Latest direction: [NATIVE-WORKSPACE.md](NATIVE-WORKSPACE.md) defines the native 
 
 All product ideas are retained. F0, the manual-store aggregation/serialization/corruption safeguards of F1, and the first default-off I1/C1 read-only bridge are implemented for review; see STOCK-BRIDGE.md. “Existing” means source/test evidence at the synchronised commits; it does not assert live deployment or hardware success. Remaining work requires its feature/release gate. Cross-seller access, paid services, publishing, delisting, migrations and notifications are not implicitly authorised by this plan.
 
+## Native scanner update
+
+[NATIVE-SCANNER.md](NATIVE-SCANNER.md) supersedes the earlier photo-first OCR/native-adapter assumption: live camera overlays, continuous per-field recognition, calibrated automatic acceptance and exception correction are required. Prototype this early. Existing backend/web behavior remains; no scanner/hardware test result is implied.
+
 ## Current owner decisions — 2 November 2026
 
 Initial audience: one existing Crosstopher seller/business, with multiple people sharing access to all of its data in both applications. Preserve Crosstopher as it operates today. Per-person seller restrictions and multi-seller expansion are deferred; preserve existing server-side seller boundaries. I1's audience question is resolved for this phase, bridge authentication and server-side selection are implemented; actual source-account bindings and activation remain unconfigured.

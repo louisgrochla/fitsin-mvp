@@ -6,6 +6,10 @@ The owner clarified that Fitsin must become a fully native iOS read/write busine
 
 The owner confirmed **one shared Fitsin business first; separate businesses later**. Preserve shared staff access and all existing foreign-seller boundaries; do not build per-person seller restrictions or merge seller records. New development direction does not grant merge/deploy, production credential/migration, live marketplace, message/notification or purchase permission. Local success was reported conversationally; the PR evidence still does not identify executed native results, so do not rewrite the historical test status as passed without the local evidence.
 
+## Live scanner direction
+
+The owner now explicitly wants a phone OCR overhaul: native live camera/grid/tag overlays, continuous reading and automatic acceptance when evidence is strong, keeping uncertain readings live rather than taking a poor still for later processing. [NATIVE-SCANNER.md](NATIVE-SCANNER.md) is the scanner brief. This supersedes the earlier photo-review/native-adapter assumption and the historical OCR-expansion deferral for this native workflow. Existing web operation remains intact. No scanner runtime or accuracy result is claimed yet; build the scanner prototype early and calibrate on representative iPhone/tag evidence.
+
 ## Completed foundation scope
 
 The foundation/reliability work and approved read-only shared-business stock bridge are complete for draft review. Both branches remain unmerged and every integration switch remains disabled by default. **Not release-ready:** seven native regression tests are authored but unexecuted, and the consolidated final local/device batch is pending. Unavailable local tooling did not block cloud completion.

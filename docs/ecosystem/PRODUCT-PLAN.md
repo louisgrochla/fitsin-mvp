@@ -23,13 +23,13 @@ Performance and usability are prerequisite work: see PERFORMANCE-PLAN.md. Adding
 
 ## A. Stock backlog and OCR
 
-Reuse Crosstopher's existing capture, OCR, review and print capabilities; inventory what already works before designing replacements.
+Reuse the existing stock/scan/print contracts and useful fixtures. The owner explicitly requests a native OCR overhaul: [NATIVE-SCANNER.md](NATIVE-SCANNER.md) defines continuous live recognition, grid/tag overlays, automatic acceptance of strong readings and live guidance/correction for exceptions. The web OCR engine and photo-review UX are not the required native design.
 
-Desired journey: select rail/session → photograph old tags → review OCR → match an existing record or create a garment/SKU → queue printing → confirm physical attachment. Capture must not automatically imply a trustworthy inventory record or a completed retag.
+Desired native journey: select rail/session → point the live scanner at a tag → automatically capture a stable reading, correcting exceptions → match an existing record or create a garment/SKU → queue printing → confirm physical attachment. Capture must not automatically imply a trustworthy inventory record or a completed retag.
 
 Candidate features:
 
-- Batch photograph a rail without filling forms between shots.
+- Scan tags continuously along a rail without a shutter/review form for every clean tag; keep garment photography separate.
 - Offline capture, resumable uploads and review sessions; retain work through app closure.
 - OCR suggestions for description, size, price and seller initials, with uncertain fields highlighted.
 - Explicit confirmation of ambiguous/crossed-out prices and seller ownership; do not silently invent values.

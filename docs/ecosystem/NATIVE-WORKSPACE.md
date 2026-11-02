@@ -10,13 +10,17 @@ The product is deliberately exploratory. Build usable native journeys, learn fro
 
 Confirmed owner decision: **one shared Fitsin business first; separate businesses later**. Design for business-scoped data and membership, but do not build a multi-business SaaS product or force staff into separate sellers for the first version. Preserve current shared staff access; do not create or merge seller records or introduce per-person stock restrictions. A business tenant, a staff member and a Crosstopher seller are different concepts, even when the first business maps to one existing seller.
 
+## Live scanner clarification
+
+The owner requires a native live tag scanner with grid/framing overlays, continuous recognition, lighting/focus guidance and automatic acceptance of sufficiently evidenced readings. Ordinary clean tags should not require a photograph followed by a review form. Uncertain readings remain live and improve as the view improves. This authorises an overhaul of the native recognition experience while preserving existing web/backend operation. See [NATIVE-SCANNER.md](NATIVE-SCANNER.md) for the interaction, temporal/field acceptance rules, duplicate handling and actual-device evaluation. Build this prototype early.
+
 ## What the current source actually provides
 
 | Capability | Existing source / constraint | Native work needed |
 | --- | --- | --- |
 | Stock search/edit and item history | Worker item read/upsert/history APIs; current web sync and local outbox | Native stock repository, local persistence, image list/search, detail/edit and conflict handling |
 | Garment photography | Worker photo metadata/upload/read; separate original/web variants | Native camera/library capture, ordering, durable uploads, thumbnail pipeline and access-aware caching |
-| Backlog tag capture and review | Existing scan APIs, duplicate hash/confirmation handling; browser Tesseract and review rules | Native batch capture/review; reuse parser/behavior fixtures and evaluate a native OCR adapter against them. Do not assume browser OCR runs natively or rebuild the backlog backend |
+| Backlog tag capture and review | Existing scan APIs, duplicate hash/confirmation handling; browser Tesseract and review rules | Native continuous tag scanning with tracked overlays and automatic high-evidence capture; use web fixtures as failure examples, not a requirement to preserve unreliable parsing/UX. See NATIVE-SCANNER.md; preserve the stock backend |
 | SKU creation | Per-device reserved blocks and immutable SKU rules | Native reservation/assignment that survives offline creation/retry without duplicates |
 | Bluetooth tags/stickers | `apps/web/src/printer.ts` speaks to the owned Phomemo M02; 384-dot raster, block/chunk limits and reconnect/release behavior | CoreBluetooth transport, native raster/barcode rendering, serial print queue, explicit uncertain-print/reprint states and hardware verification |
 | Print history and stock transitions | Existing tag-printed command; confirm/print paths can activate stock and queue POS creation | Reuse the actual command semantics, distinguish bytes sent from verified physical output, and avoid duplicate side effects after a lost response |
@@ -36,7 +40,7 @@ Use this as a first design to test, not a frozen sitemap:
 
 - **Today:** money/pace, today's people/events and a short ordered list of actions. A task opens the native item/workflow that resolves it. Urgent conflicts/removals precede routine photo/tag work. Sections load independently.
 - **Stock:** fast local search and photo-led rows, practical filters and saved work queues. One garment record connects photos, tag state, location when supported, listings, sales and history. Search and selection survive returning from an edit.
-- **Capture:** immediate camera or barcode scan, with batch capture as a first-class mode. Save each shot locally before continuing. Review, item creation and print queue remain in one flow; avoid a full form between every photo.
+- **Capture:** immediate live tag/barcode scanner, with overlays, automatic stable-read capture and an accepted-items tray. Keep reading uncertain fields live; correct only exceptions. Persist each accepted read before advancing. Garment photography is a separate native camera/library action; item creation and printing remain in the same working flow.
 - **Sales:** today's activity and sale detail linked to garments where known. Show actual source amounts/channel and honest unmatched/refund states. Recording a manual sale and matching an existing payment are visibly different actions.
 - **Work:** calendar, rota, handovers and task batches. Printer connection/queue is reachable from capture and item detail; account/integration settings live outside the daily task path.
 
@@ -44,12 +48,12 @@ An item should have a small set of context-appropriate primary actions, not a lo
 
 ## First complete journey to build
 
-**Find or capture a garment → review/edit → save → print a sticker → continue to the next garment.**
+**Find a garment or scan its tag live → automatically accept a stable reading (edit exceptions) → save → print a sticker → continue to the next garment.**
 
-1. Native stock list/search, item detail and editing, using synthetic fixtures and the existing command contracts. Include a native add-photo path.
+1. Prototype the live scanner early alongside native stock list/search, item detail and editing, using synthetic fixtures and the existing command contracts. Include a distinct native garment-photo path. Use NATIVE-SCANNER.md for readiness/auto-capture behavior.
 2. Scoped local store/outbox and authenticated read/write client; local saves are immediate and display pending/synced/failed honestly. Validate retries and concurrent web/native edits before claiming them safe.
 3. CoreBluetooth M02 pairing/reconnect/release, print preview and serial queue. Reuse the existing packet/raster constraints and test against known-good fixtures. Hardware acceptance uses the actual printer; browser success does not prove iOS success.
-4. Connect capture/review/SKU allocation/printing into the loop. Network loss or app restart must not lose photos, edited fields, queue order or command identity. An uncertain physical print asks for inspection/reprint; it cannot be made exactly-once by a network idempotency key.
+4. Connect live scanning, exception correction, SKU allocation and printing into the loop. Network loss or app restart must not lose photos, edited fields, queue order or command identity. An uncertain physical print asks for inspection/reprint; it cannot be made exactly-once by a network idempotency key.
 5. Exercise the same garment in the existing web app and native app to prove they are extensions of one stock system. Preserve current confirmation/POS side effects; use isolated fixtures, never real stock, during development.
 
 This is a complete, useful slice that can expose design problems early. It is the start of full native coverage, not a permanent restriction to only these operations. Next add the operational queues/listing controls, then connected sale/detail flows and the strongest business-work experiments.
@@ -82,7 +86,7 @@ Prefer a working screen and one real synthetic journey over speculative dashboar
 
 ## Implementation order and evidence
 
-1. Native design prototypes and the full parity inventory, using synthetic repositories. Test the proposed navigation through the first complete journey.
+1. Native design prototypes including the live scanner and full parity inventory, using synthetic repositories. Test the proposed navigation and continuous scanning through the first complete journey.
 2. Business identity/read-write contract, scoped storage/outbox and conflict/retry test fixtures. Use the confirmed shared-business scope; design explicit business/seller mapping without provisioning production accounts. Separate-business onboarding comes later.
 3. Stock/detail/edit/photo vertical slice, then native Bluetooth and the capture/review/print loop.
 4. Operational queues, questions, listing/state controls, history and settings; retain provider-required handoffs explicitly in the parity inventory.
