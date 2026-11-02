@@ -1,5 +1,9 @@
 # fit'sin Sales + Targets + Events MVP
 
+## Ecosystem roadmap and cloud handover
+
+See [the Fitsin + Crosstopher programme](docs/ecosystem/README.md) for the saved product plan, performance-first refactor brief, and new-session/cloud handover (2 November 2026).
+
 ## What is included
 
 - `backend/` Express API with Shopify + Notion integration, auth, caching, stale fallback
