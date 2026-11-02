@@ -10,6 +10,10 @@ The owner confirmed **one shared Fitsin business first; separate businesses late
 
 The owner now explicitly wants a phone OCR overhaul: native live camera/grid/tag overlays, continuous reading and automatic acceptance when evidence is strong, keeping uncertain readings live rather than taking a poor still for later processing. [NATIVE-SCANNER.md](NATIVE-SCANNER.md) is the scanner brief. This supersedes the earlier photo-review/native-adapter assumption and the historical OCR-expansion deferral for this native workflow. Existing web operation remains intact. No scanner runtime or accuracy result is claimed yet; build the scanner prototype early and calibrate on representative iPhone/tag evidence.
 
+## Future optional rail/stocktake workflows
+
+Owner context: **ten upstairs rails**, an **unknown future basement rail count**, and rail assignment **optional at initial listing**. Reuse the native scanner for selecting a rail and scanning its garment barcodes, with separate assignment and stocktake modes. The later dissertation visual-tracking project should consume/compare timestamped observations without silently changing operational stock locations. [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) records the proposed scope, research extension and recommendations. These are future design requirements, not implemented features or authorisation to activate research capture/export or live stock changes.
+
 ## Completed foundation scope
 
 The foundation/reliability work and approved read-only shared-business stock bridge are complete for draft review. Both branches remain unmerged and every integration switch remains disabled by default. **Not release-ready:** seven native regression tests are authored but unexecuted, and the consolidated final local/device batch is pending. Unavailable local tooling did not block cloud completion.

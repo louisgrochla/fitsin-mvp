@@ -15,6 +15,12 @@ This is the scanner design/acceptance brief, not an implemented scanner or a mea
 
 The scanner may retain the best tag crop for traceability/reprocessing without making the user take a photograph. Avoid retaining the whole video by default. Tag evidence remains distinct from garment product photographs, which use a separate camera/gallery workflow.
 
+## Reuse for optional barcode workflows
+
+The owner wants future rail assignment and stocktaking using this camera/scanning platform. Keep the recognition pipeline separate from the chosen action: live OCR for old tags, barcode lookup for known items, assign/move to a selected rail, and observe/count a rail. Code 128 SKU decoding is the existing garment identity path; do not OCR-guess known IDs. Share native camera feedback, tracking and durable sessions, while giving each mode explicit acceptance/side-effect rules.
+
+There are ten upstairs rails and an unknown future number in the basement. Rail assignment stays optional and is not a prerequisite for creating/listing an item. [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) records stable location IDs, batch assignment, reconciliation, and separation of confirmed scans from the dissertation visual-tracking project's future predictions. These future modules are not implemented by the live scanner brief.
+
 ## Recognition and acceptance
 
 Use a native camera-frame pipeline with on-device text recognition as the starting implementation (AVFoundation and Apple Vision, subject to device/OS validation). The capture preview runs independently of recognition. Process a bounded number of current frames off the main thread, drop superseded work and avoid queuing every camera frame. Track the active tag and its perspective/region of interest. On backgrounding, interruption or cancellation, stop camera/recognition work appropriately and retain accepted queue entries.

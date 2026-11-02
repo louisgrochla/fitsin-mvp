@@ -14,6 +14,10 @@ Confirmed owner decision: **one shared Fitsin business first; separate businesse
 
 The owner requires a native live tag scanner with grid/framing overlays, continuous recognition, lighting/focus guidance and automatic acceptance of sufficiently evidenced readings. Ordinary clean tags should not require a photograph followed by a review form. Uncertain readings remain live and improve as the view improves. This authorises an overhaul of the native recognition experience while preserving existing web/backend operation. See [NATIVE-SCANNER.md](NATIVE-SCANNER.md) for the interaction, temporal/field acceptance rules, duplicate handling and actual-device evaluation. Build this prototype early.
 
+## Optional locations and research expansion
+
+The scanner should support future rail assignment and stocktaking as separate modes. The owner has ten upstairs rails, with an unknown future basement count; use configurable location identities, not a fixed ten-rail layout. Select/scan a rail and batch-scan item barcodes, while keeping location optional during initial listing. [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) defines the proposed workflows, movement/observation distinction, research extension and recommended adjacent features. Make room for this without delaying the core native workflow or presenting unused future tabs.
+
 ## What the current source actually provides
 
 | Capability | Existing source / constraint | Native work needed |

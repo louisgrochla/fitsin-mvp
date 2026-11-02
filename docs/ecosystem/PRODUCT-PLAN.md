@@ -25,7 +25,7 @@ Performance and usability are prerequisite work: see PERFORMANCE-PLAN.md. Adding
 
 Reuse the existing stock/scan/print contracts and useful fixtures. The owner explicitly requests a native OCR overhaul: [NATIVE-SCANNER.md](NATIVE-SCANNER.md) defines continuous live recognition, grid/tag overlays, automatic acceptance of strong readings and live guidance/correction for exceptions. The web OCR engine and photo-review UX are not the required native design.
 
-Desired native journey: select rail/session → point the live scanner at a tag → automatically capture a stable reading, correcting exceptions → match an existing record or create a garment/SKU → queue printing → confirm physical attachment. Capture must not automatically imply a trustworthy inventory record or a completed retag.
+Desired native journey: optionally select a session/rail → point the live scanner at a tag → automatically capture a stable reading, correcting exceptions → match an existing record or create a garment/SKU → queue printing → confirm physical attachment. Capture must not automatically imply a trustworthy inventory record or a completed retag.
 
 Candidate features:
 
@@ -118,6 +118,8 @@ Prioritise urgent sales/stock issues above routine backlog. Open the relevant na
 - Tag-price mismatch warnings after changes; do not silently overwrite physical tag state.
 
 ## G. Events and team operations
+
+Owner expansion: ten upstairs rails, unknown basement expansion, and optional later rail assignment by barcode batch. Listing creation must not require a rail. See [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) for assignment versus stocktake, movement history, last-confirmed observations and the later dissertation visual-tracking interface.
 
 - Link an event to selected garments, preparation checklist and missing tag/photo checks.
 - Explicit event-sale attribution and post-event performance; same-day sales are not automatically event sales.

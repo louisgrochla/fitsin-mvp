@@ -8,6 +8,10 @@ All product ideas are retained. F0, the manual-store aggregation/serialization/c
 
 [NATIVE-SCANNER.md](NATIVE-SCANNER.md) supersedes the earlier photo-first OCR/native-adapter assumption: live camera overlays, continuous per-field recognition, calibrated automatic acceptance and exception correction are required. Prototype this early. Existing backend/web behavior remains; no scanner/hardware test result is implied.
 
+## Optional rail/stocktake expansion
+
+The owner wants future reuse of the scanner for rail assignment and stocktakes: ten upstairs rails now, any number in the basement later, and no mandatory rail field at initial listing. [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) refines B3/O3 with stable locations, explicit assignment/count modes, resumable batches, discrepancy handling and separate research predictions. This records the extension direction; implementation and live/research activation are not claimed.
+
 ## Current owner decisions — 2 November 2026
 
 Initial audience: one existing Crosstopher seller/business, with multiple people sharing access to all of its data in both applications. Preserve Crosstopher as it operates today. Per-person seller restrictions and multi-seller expansion are deferred; preserve existing server-side seller boundaries. I1's audience question is resolved for this phase, bridge authentication and server-side selection are implemented; actual source-account bindings and activation remain unconfigured.
