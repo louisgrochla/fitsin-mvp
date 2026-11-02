@@ -4,6 +4,7 @@ struct TodayView: View {
     @ObservedObject var vm: TodayViewModel
     @ObservedObject var rotaVM: RotaViewModel
     @EnvironmentObject var session: AppSession
+    @Environment(\.scenePhase) private var scenePhase
     @State private var animateIn = false
     @State private var animatedProgress = 0.0
     @State private var selectedSource: ManualSource = .cash
@@ -108,7 +109,7 @@ struct TodayView: View {
                 async let loadRota: Void = rotaVM.load()
                 async let loadSched: Void = rotaVM.loadSchedule(userName: userName)
                 _ = await (loadToday, loadRota, loadSched)
-                if !Task.isCancelled { vm.startAutoRefresh(intervalSeconds: 60) }
+                if !Task.isCancelled && scenePhase == .active { vm.startAutoRefresh(intervalSeconds: 60) }
             }
             .onDisappear { vm.stopAutoRefresh() }
             .navigationBarTitleDisplayMode(.inline)

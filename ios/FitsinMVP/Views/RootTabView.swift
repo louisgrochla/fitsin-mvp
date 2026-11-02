@@ -76,6 +76,7 @@ struct RootTabView: View {
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
                 Task {
+                    guard scenePhase == .active else { return }
                     switch selectedTab {
                     case 0:
                         todayVM.startAutoRefresh()

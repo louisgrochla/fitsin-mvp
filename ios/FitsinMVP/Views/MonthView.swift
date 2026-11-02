@@ -5,6 +5,7 @@ struct MonthView: View {
     @State private var showingGoalSheet = false
     @State private var showingProjectionCalendar = false
     @State private var goalInput = ""
+    @Environment(\.scenePhase) private var scenePhase
     @State private var animateIn = false
 
     private static let gbpFormatter: NumberFormatter = {
@@ -76,7 +77,7 @@ struct MonthView: View {
                     animateIn = true
                 }
                 await vm.load()
-                if !Task.isCancelled { vm.startAutoRefresh(intervalSeconds: 60) }
+                if !Task.isCancelled && scenePhase == .active { vm.startAutoRefresh(intervalSeconds: 60) }
             }
             .onDisappear { vm.stopAutoRefresh() }
             .navigationBarTitleDisplayMode(.inline)
