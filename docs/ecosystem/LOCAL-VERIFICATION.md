@@ -1,6 +1,6 @@
 # Local Xcode, device and manual verification
 
-Owner direction (2 November 2026): batch these local checks at the end of the intended change set. Continue authorised cloud work and cloud checks in the meantime; do not require a Mac/device pass before every slice. Any cloud finding that depends on native behavior remains unverified until this final batch.
+Current local-session direction: [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) defines the native build and expanded verification scope. Run automated Xcode/simulator checks throughout development and batch owner-assisted physical/manual acceptance at the end. The checklist below preserves the earlier foundation checks; extend it for the new native scanner, write/session/outbox, photo, printer and optional rail workflows as they are implemented. Missing hardware must not stop independently verifiable development.
 
 All boxes are pending unless a reviewer adds an evidence link, date, revision and result. Cloud tests do not establish iOS compilation or release readiness. Do not merge, deploy, archive for release, upload TestFlight, migrate production or send push as part of this checklist without the separate release/action gate.
 

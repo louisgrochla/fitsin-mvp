@@ -2,6 +2,8 @@
 
 Owner clarification, 2 November 2026. This supersedes treating a read-only stock summary plus an external link as the finished integration. This is a product/design brief and implementation sequence; the native workflows below are not yet implemented by the existing foundation PRs.
 
+The next session runs on the owner's Mac. [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) turns this brief into the authorised continuous build sequence, including tests, optional rail/stocktake preparation, completion criteria and boundaries. Do not stop at this design brief or after the first journey to request routine continuation approval.
+
 ## Product intent
 
 Fitsin is the team's native iOS workspace for running the business: stock, photography, tags, sales, payments, events and day-to-day work. It reads and writes through the existing business systems, with an interface designed around work on an iPhone. Crosstopher's current web app remains usable alongside it, while its backend continues to own stock and marketplace rules. Functional coverage should include the existing Crosstopher capabilities, rather than copying its layout or opening a web viewer to complete ordinary tasks.

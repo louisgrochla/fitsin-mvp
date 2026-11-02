@@ -1,5 +1,13 @@
 # Checkpoint — foundation reviewed; native workspace direction, 2 November 2026
 
+## Next session — local Mac implementation
+
+The owner wants the next session to build this programme locally, continuing autonomously through implementation and tests. [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) is the current build mandate: native read/write coverage, live OCR, photos, Bluetooth tags, connected daily work and a small default-off rail/stocktake module after the core journeys. It replaces the old cloud-audit prompt and includes local commands, acceptance criteria, boundaries and durable-checkpoint requirements. Do not stop after the first slice or ask for routine continuation approval.
+
+Run automated native builds/tests during development; batch owner-assisted physical/manual checks at the end. This updates the earlier cloud-session instruction to defer all Mac work. Preserve current local/remote changes, especially signing and Xcode user files. This handover update changes documentation only: no new app feature, runtime test result or production activation is claimed.
+
+Handover verification: Markdown-only diffs in both repositories; relative documentation links resolve, code fences balance and `git diff --check` passes. Referenced baseline scripts/targets were checked against the current source. Runtime/native suites were not rerun for this documentation change; the executed counts below remain historical.
+
 ## Latest owner direction — native read/write workspace
 
 The owner clarified that Fitsin must become a fully native iOS read/write business workspace, integrating Crosstopher's capabilities with a redesigned mobile UI/UX: stock actions, camera/photos, Bluetooth stickers/tags and useful combinations with sales/payments and events. The read-only summary/browser handoff is not the completed product. [NATIVE-WORKSPACE.md](NATIVE-WORKSPACE.md) records the current brief, existing capability map, proposed native design, first complete journey and exploratory options. It is design/planning work; the expanded native workflows have not yet been implemented.
@@ -12,7 +20,7 @@ The owner now explicitly wants a phone OCR overhaul: native live camera/grid/tag
 
 ## Future optional rail/stocktake workflows
 
-Owner context: **ten upstairs rails**, an **unknown future basement rail count**, and rail assignment **optional at initial listing**. Reuse the native scanner for selecting a rail and scanning its garment barcodes, with separate assignment and stocktake modes. The later dissertation visual-tracking project should consume/compare timestamped observations without silently changing operational stock locations. [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) records the proposed scope, research extension and recommendations. These are future design requirements, not implemented features or authorisation to activate research capture/export or live stock changes.
+Owner context: **ten upstairs rails**, an **unknown future basement rail count**, and rail assignment **optional at initial listing**. Reuse the native scanner for selecting a rail and scanning its garment barcodes, with separate assignment and stocktake modes. The later dissertation visual-tracking project should consume/compare timestamped observations without silently changing operational stock locations. [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) records the scope, research extension and recommendations. The local build goal includes a minimal optional module for synthetic development after the core workflows; no module is implemented yet. Research capture/export and live stock changes remain outside this authorisation.
 
 ## Completed foundation scope
 
@@ -27,7 +35,7 @@ Fetched both remotes, found clean trees and matching supplied heads, retained lo
 
 ## Binding owner decisions
 
-One existing Crosstopher seller/business is shared by everyone using the two applications. Do not add per-person seller restrictions, combine seller records, reassign stock, or weaken foreign-seller boundaries. Existing OCR/backlog is implemented and was not rebuilt. Local Mac/Xcode/simulator/iPhone/manual checks are one final batch. Use Codex only; never invoke Claude/Anthropic tooling or inspect its authentication.
+One existing Crosstopher seller/business is shared by everyone using the two applications. Do not add per-person seller restrictions, combine seller records, reassign stock, or weaken foreign-seller boundaries. Existing web OCR/backlog is implemented and was not rebuilt by the foundation; the native live scanner overhaul is now included in the local build. Run automated Mac/Xcode/simulator checks as development proceeds and consolidate physical/manual acceptance at the end. Use Codex only; never invoke Claude/Anthropic tooling or inspect its authentication.
 
 No merge, deploy, production migration, live integration activation, marketplace publish/delist, notification/message, or purchase is authorised. No production credentials or bindings were configured. The new native direction includes garment photos, camera capture, Bluetooth printing and scoped stock writes. Rich push, new financial/payment operations, paid services and live external actions retain their separate requirements; broader catalogue items remain experiments to select rather than a claim that all are implemented.
 
@@ -67,4 +75,4 @@ Larger follow-ups stay in [MILESTONES.md](MILESTONES.md): calendar/account-aware
 
 ## Resume or rollback
 
-Read this checkpoint, [AUDIT-2026-11-02.md](AUDIT-2026-11-02.md), [STOCK-BRIDGE.md](STOCK-BRIDGE.md), [INTEGRATION-CONTRACTS.md](INTEGRATION-CONTRACTS.md), [MILESTONES.md](MILESTONES.md) and [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md). Fetch and inspect trees before continuing; preserve remote advances and unrelated changes. Revert selected unshipped implementation commits if needed; keep evidence/catalogue documents. No production rollback or migration is needed. Do not mark either PR ready, merge, deploy or activate as a consequence of cloud test success.
+Read this checkpoint, then [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) and its ordered references for the local native build. Fetch and inspect trees before continuing; preserve remote advances and unrelated changes. Earlier foundation audit/bridge evidence remains historical to its revisions. Revert selected unshipped implementation commits if needed; keep evidence/catalogue documents. No production rollback or migration is needed for this documentation update. Do not mark either PR ready, merge, deploy or activate as a consequence of automated test success.

@@ -2,6 +2,8 @@
 
 Owner direction, 2 November 2026. Reuse the native scanner for optional rail assignment and stocktaking, with a later connection to the owner's dissertation visual-tracking research. There are **ten upstairs rails** now. The basement expansion will add an **unknown number** of rails. Rail assignment is **not required during initial listing/item creation**. These are future capabilities to accommodate in the architecture; this document does not implement them or authorise live stock changes/research capture.
 
+The local [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) includes a minimal default-off location/assignment/stocktake module after the core native workflows, so these future capabilities can be exercised with synthetic data. The visual research system, live export and physical shop activation remain future work. This distinction supersedes treating the whole location topic as either mandatory during listing or a full research-system implementation.
+
 ## Improve the scope around reusable scanner modes
 
 The same camera, barcode recognition, feedback and durable batch queue can support several explicit modes:
