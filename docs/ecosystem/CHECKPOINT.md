@@ -1,3 +1,15 @@
+# Current local native implementation checkpoint
+
+2 November 2026, local Mac. The authorised read/write workspace has been implemented in isolated worktrees. See [capability inventory](NATIVE-IMPLEMENTATION.md), [native API contract](NATIVE-API.md), and [local verification evidence](NATIVE-LOCAL-EVIDENCE.md). These documents supersede the historical “not yet implemented / native tests unexecuted” statements below. Executed UI observations and remaining physical acceptance are explicitly separated from automated coverage.
+
+Fetched bases: Fitsin `fc955b6591e69f434ec56a41e622dcf7b7ac175d`, Crosstopher `d730f4214de68a8c7ec368e10fa660fa54abaa95`. Owner checkouts, signing and Xcode user state were preserved; implementation uses `/Users/Avii/Developer/fitsin-local-verification-20261102/{fitsin,crosstopher}`. Both existing PRs remain draft. No production activation, release or migration is authorised here.
+
+Current scope includes SwiftUI stock/write outbox, live OCR, photos, CoreBluetooth sticker queue, operational commands and reviews/mappings, Vinted human handoff, retained finance/calendar/rota, verified sale links, and optional locations/stocktake. Retained futures include financial ledger, rich push and dissertation tracking.
+
+Implementation commits: Fitsin `8a1f92802d9edb9ca1a7c85e0c11e31b5348307d`; Crosstopher `3c092ecd62da29be29c697f231acd81a304fa80e`. Automated results: backend 34, Crosstopher 677 plus separate benchmark, native 26, both TypeScript checks, web build, native app builds, and real connected local API checks passed. The owner requested stopping extended synthetic walkthroughs and finishing delivery; no additional approval is pending. See the single consolidated device/rollout checklist in the evidence record.
+
+## Historical foundation checkpoints
+
 # Checkpoint — foundation reviewed; native workspace direction, 2 November 2026
 
 ## Next session — local Mac implementation

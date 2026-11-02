@@ -1,3 +1,5 @@
+> Local implementation update, 2 November 2026: see [NATIVE-IMPLEMENTATION.md](NATIVE-IMPLEMENTATION.md), [NATIVE-API.md](NATIVE-API.md) and [NATIVE-LOCAL-EVIDENCE.md](NATIVE-LOCAL-EVIDENCE.md) for current implemented scope, protocol and actual Mac results. Earlier planning/cloud-only status below is historical.
+
 # Dependency-ordered delivery backlog
 
 Current execution mandate: [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) authorises continuous local Mac implementation of the native workspace, scanner, photos/printing, connected workflows and minimal optional rail/stocktake module. Historical approval questions below are not new gates for that included development. Local synthetic migrations are included; production migrations, live actions and the separately excluded catalogue features remain outside scope. Run automated native checks throughout and batch owner-assisted physical/manual acceptance at the end.

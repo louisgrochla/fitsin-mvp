@@ -1,3 +1,5 @@
+> Local implementation update, 2 November 2026: see [NATIVE-IMPLEMENTATION.md](NATIVE-IMPLEMENTATION.md), [NATIVE-API.md](NATIVE-API.md) and [NATIVE-LOCAL-EVIDENCE.md](NATIVE-LOCAL-EVIDENCE.md) for current implemented scope, protocol and actual Mac results. Earlier planning/cloud-only status below is historical.
+
 # Fitsin native business workspace — revised product direction
 
 Owner clarification, 2 November 2026. This supersedes treating a read-only stock summary plus an external link as the finished integration. This is a product/design brief and implementation sequence; the native workflows below are not yet implemented by the existing foundation PRs.

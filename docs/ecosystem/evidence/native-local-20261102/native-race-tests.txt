@@ -1,0 +1,89 @@
+COMMAND: ['xcodebuild', '-project', 'FitsinFoundationChecks.xcodeproj', '-scheme', 'FitsinFoundationTests', '-destination', 'platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF', '-derivedDataPath', 'build/NativeTestDerived', '-resultBundlePath', '/Users/Avii/Developer/fitsin-local-verification-20261102/logs/NativeRace.xcresult', 'CODE_SIGNING_ALLOWED=NO', 'RUN_NATIVE_CONNECTED_TESTS=YES', 'test']
+CWD: /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios
+
+Test Suite 'All tests' started at 2026-11-02 17:44:54.962.
+Test Suite 'FitsinFoundationTests.xctest' started at 2026-11-02 17:44:54.962.
+Test Suite 'LoadingTests' started at 2026-11-02 17:44:54.962.
+Test Case '-[FitsinFoundationTests.LoadingTests testConcurrentRefreshesShareWorkAndFailureCanRecover]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testConcurrentRefreshesShareWorkAndFailureCanRecover]' passed (0.006 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testCurrentMonthDoesNotWaitForPreviousMonth]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testCurrentMonthDoesNotWaitForPreviousMonth]' passed (0.003 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testDisabledStockIsHiddenAndFetchIsOptional]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testDisabledStockIsHiddenAndFetchIsOptional]' passed (0.001 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testFailedSaveReturnsFailureAndDoesNotClaimSuccess]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testFailedSaveReturnsFailureAndDoesNotClaimSuccess]' passed (0.001 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testLondonMidnightAcceptsUTCPreviousDateThenExpiresAtNextShopDay]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testLondonMidnightAcceptsUTCPreviousDateThenExpiresAtNextShopDay]' passed (0.003 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testMonthRolloverUsesLondonCalendar]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testMonthRolloverUsesLondonCalendar]' passed (0.001 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testStockDoesNotBlockTodayAndFailureIsIndependent]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testStockDoesNotBlockTodayAndFailureIsIndependent]' passed (0.001 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testStockOutageRetainsTimestampButRevocationAndScopeChangeDiscardData]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testStockOutageRetainsTimestampButRevocationAndScopeChangeDiscardData]' passed (0.002 seconds).
+Test Case '-[FitsinFoundationTests.LoadingTests testTodayAppearsBeforeSlowWeekAndSurvivesItsFailure]' started.
+Test Case '-[FitsinFoundationTests.LoadingTests testTodayAppearsBeforeSlowWeekAndSurvivesItsFailure]' passed (0.001 seconds).
+Test Suite 'LoadingTests' passed at 2026-11-02 17:44:54.994.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.019 (0.032) seconds
+Test Suite 'WorkspaceConnectedTests' started at 2026-11-02 17:44:54.995.
+Test Case '-[FitsinFoundationTests.WorkspaceConnectedTests testNativeStoreAgainstLoopbackWorkerD1AndR2]' started.
+CONNECTED NATIVE: real URLSession -> loopback Worker -> D1/R2; offline restart, scan/draft/photo and web conflict passed
+Test Case '-[FitsinFoundationTests.WorkspaceConnectedTests testNativeStoreAgainstLoopbackWorkerD1AndR2]' passed (0.363 seconds).
+Test Suite 'WorkspaceConnectedTests' passed at 2026-11-02 17:44:55.358.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.363 (0.363) seconds
+Test Suite 'WorkspaceCoreTests' started at 2026-11-02 17:44:55.358.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testAmbiguityAndGapsCannotAutoAccept]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testAmbiguityAndGapsCannotAutoAccept]' passed (0.005 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testDecimalPriceEditingRejectsPartialAmbiguousOrFractionalPence]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testDecimalPriceEditingRejectsPartialAmbiguousOrFractionalPence]' passed (0.001 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testDiskIsolationCorruptionAndSendingPrintRecoveryData]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testDiskIsolationCorruptionAndSendingPrintRecoveryData]' passed (0.006 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testFiveThousandGarmentCacheReadSearchAndSave]' started.
+SYNTHETIC 5000 CACHE: read_ms=391.4070129394531, search_ms=2.4889707565307617, item_lookup_ms=0.8360147476196289, save_ms=95.23391723632812, network_requests=0; simulator storage operations, not UI/device latency
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testFiveThousandGarmentCacheReadSearchAndSave]' passed (1.086 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testM02RasterBlocksAndBitsAreBounded]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testM02RasterBlocksAndBitsAreBounded]' passed (0.011 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testRenderedBarcodeDecodesToStableSKU]' started.
+2026-11-02 17:44:56.515817+0000 xctest[24356:255930] The filter 'CIPortraitEffectSpillCorrection' is not implemented in the bundle at /Library/Developer/CoreSimulator/Volumes/iOS_23D8133/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.3.simruntime/Contents/Resources/RuntimeRoot/System/Library/CoreImage/PortraitFilters.cifilter.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testRenderedBarcodeDecodesToStableSKU]' passed (0.234 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testRepeatedPixelFramesDoNotProvideIndependentEvidence]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testRepeatedPixelFramesDoNotProvideIndependentEvidence]' passed (0.000 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testStableEvidenceAcceptsOnceAndRequiresTagExit]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testStableEvidenceAcceptsOnceAndRequiresTagExit]' passed (0.000 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testUUIDv7AndExactMoneyJSON]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceCoreTests testUUIDv7AndExactMoneyJSON]' passed (0.004 seconds).
+Test Suite 'WorkspaceCoreTests' passed at 2026-11-02 17:44:56.707.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 1.347 (1.349) seconds
+Test Suite 'WorkspaceOutboxTests' started at 2026-11-02 17:44:56.707.
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testConflictRetainsDraftAndRevocationStopsQueue]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testConflictRetainsDraftAndRevocationStopsQueue]' passed (0.006 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testDiskFailureDoesNotConsumeSKUOrAcknowledgeScan]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testDiskFailureDoesNotConsumeSKUOrAcknowledgeScan]' passed (0.003 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testEditorOpenedBeforeCreateSyncUsesCreationReceiptAfterItCompletes]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testEditorOpenedBeforeCreateSyncUsesCreationReceiptAfterItCompletes]' passed (0.014 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testLostReplyReplaysSameBodyAndDependentCommandUsesReceiptRevision]' started.
+2026-11-02 17:44:56.733989+0000 xctest[24356:255969] [Default] Task <1B6B48D7-B01C-49AD-B777-8198C2B59842>.<2> finished with error [-1005] Error Domain=NSURLErrorDomain Code=-1005 "(null)" UserInfo={_NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <1B6B48D7-B01C-49AD-B777-8198C2B59842>.<2>"
+), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <1B6B48D7-B01C-49AD-B777-8198C2B59842>.<2>}
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testLostReplyReplaysSameBodyAndDependentCommandUsesReceiptRevision]' passed (0.012 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testRepeatedDraftActionKeepsOneGarmentAndOneSKU]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testRepeatedDraftActionKeepsOneGarmentAndOneSKU]' passed (0.003 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testRestartKeepsOperationAndSKUAndMarksInterruptedPrintUncertain]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testRestartKeepsOperationAndSKUAndMarksInterruptedPrintUncertain]' passed (0.005 seconds).
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testUnchangedInventoryDoesNotDownloadCatalogueAgain]' started.
+Test Case '-[FitsinFoundationTests.WorkspaceOutboxTests testUnchangedInventoryDoesNotDownloadCatalogueAgain]' passed (0.004 seconds).
+Test Suite 'WorkspaceOutboxTests' passed at 2026-11-02 17:44:56.756.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.047 (0.049) seconds
+Test Suite 'FitsinFoundationTests.xctest' passed at 2026-11-02 17:44:56.757.
+	 Executed 26 tests, with 0 failures (0 unexpected) in 1.776 (1.795) seconds
+Test Suite 'All tests' passed at 2026-11-02 17:44:56.757.
+	 Executed 26 tests, with 0 failures (0 unexpected) in 1.776 (1.795) seconds
+2026-11-02 17:44:57.043 xcodebuild[24300:255428] [MT] IDETestOperationsObserverDebug: 4.441 elapsed -- Testing started completed.
+2026-11-02 17:44:57.043 xcodebuild[24300:255428] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-02 17:44:57.043 xcodebuild[24300:255428] [MT] IDETestOperationsObserverDebug: 4.441 sec, +4.441 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/Avii/Developer/fitsin-local-verification-20261102/logs/NativeRace.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started

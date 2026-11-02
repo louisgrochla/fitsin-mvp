@@ -1,3 +1,5 @@
+> Implementation update, 2 November 2026: see [current capability inventory](NATIVE-IMPLEMENTATION.md) and [executed evidence/device checklist](NATIVE-LOCAL-EVIDENCE.md). This brief is preserved as design history; historical unimplemented wording below is superseded.
+
 # Native live tag scanner
 
 Owner direction, 2 November 2026: overhaul recognition on the phone. A continuously running native camera with framing/grid overlays, live recognition and visible readiness is the primary tag-entry workflow. Photographing a tag and processing that still later is a fallback. Clean, sufficiently evidenced readings should be accepted automatically without a routine review screen. When evidence is weak, keep reading the live tag and guide the person to improve the view.

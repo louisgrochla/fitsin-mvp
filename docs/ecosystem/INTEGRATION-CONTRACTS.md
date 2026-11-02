@@ -1,3 +1,5 @@
+> Local implementation update, 2 November 2026: see [NATIVE-IMPLEMENTATION.md](NATIVE-IMPLEMENTATION.md), [NATIVE-API.md](NATIVE-API.md) and [NATIVE-LOCAL-EVIDENCE.md](NATIVE-LOCAL-EVIDENCE.md) for current implemented scope, protocol and actual Mac results. Earlier planning/cloud-only status below is historical.
+
 # Integration contracts — approved scope and later proposals
 
 The initial read-only stock bridge is implemented behind default-off switches; its exact shipped contract is in STOCK-BRIDGE.md. The wider image, ledger and section contracts below remain proposals, not assertions about existing APIs. The owner has approved the initial shared single-seller audience below. Server-bound seller selection and dedicated bridge authentication are implemented; actual source bindings/credentials and production edge access remain unconfigured for a later approved activation. Keep both applications initially.

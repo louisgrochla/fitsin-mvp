@@ -1,3 +1,5 @@
+> Local implementation update, 2 November 2026: see [NATIVE-IMPLEMENTATION.md](NATIVE-IMPLEMENTATION.md), [NATIVE-API.md](NATIVE-API.md) and [NATIVE-LOCAL-EVIDENCE.md](NATIVE-LOCAL-EVIDENCE.md) for current implemented scope, protocol and actual Mac results. Earlier planning/cloud-only status below is historical.
+
 # Local Xcode, device and manual verification
 
 Current local-session direction: [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) defines the native build and expanded verification scope. Run automated Xcode/simulator checks throughout development and batch owner-assisted physical/manual acceptance at the end. The checklist below preserves the earlier foundation checks; extend it for the new native scanner, write/session/outbox, photo, printer and optional rail workflows as they are implemented. Missing hardware must not stop independently verifiable development.

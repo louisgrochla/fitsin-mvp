@@ -1,0 +1,82 @@
+[
+  {
+    "name": "fitsin-native-backend-final",
+    "cwd": "/Users/Avii/Developer/fitsin-local-verification-20261102/fitsin",
+    "command": [
+      "npm",
+      "test",
+      "--prefix",
+      "backend"
+    ],
+    "exit_code": 0,
+    "seconds": 1.56
+  },
+  {
+    "name": "native-race-tests",
+    "cwd": "/Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios",
+    "command": [
+      "xcodebuild",
+      "-project",
+      "FitsinFoundationChecks.xcodeproj",
+      "-scheme",
+      "FitsinFoundationTests",
+      "-destination",
+      "platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF",
+      "-derivedDataPath",
+      "build/NativeTestDerived",
+      "-resultBundlePath",
+      "/Users/Avii/Developer/fitsin-local-verification-20261102/logs/NativeRace.xcresult",
+      "CODE_SIGNING_ALLOWED=NO",
+      "RUN_NATIVE_CONNECTED_TESTS=YES",
+      "test"
+    ],
+    "exit_code": 0,
+    "seconds": 10.772
+  },
+  {
+    "name": "native-final-ui-build",
+    "cwd": "/Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios",
+    "command": [
+      "xcodebuild",
+      "-project",
+      "FitsinMVP.xcodeproj",
+      "-scheme",
+      "FitsinMVP",
+      "-destination",
+      "platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF",
+      "-derivedDataPath",
+      "build/NativeAppDerived",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGN_IDENTITY=-",
+      "DEVELOPMENT_TEAM=",
+      "API_BASE_URL=http:/$()/127.0.0.1:31988",
+      "WORKSPACE_API_URL=http:/$()/127.0.0.1:31989",
+      "NATIVE_WORKSPACE_ENABLED=YES",
+      "STOCK_SUMMARY_ENABLED=NO",
+      "build"
+    ],
+    "exit_code": 0,
+    "seconds": 6.735
+  },
+  {
+    "name": "native-default-off-build",
+    "cwd": "/Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios",
+    "command": [
+      "xcodebuild",
+      "-project",
+      "FitsinMVP.xcodeproj",
+      "-scheme",
+      "FitsinMVP",
+      "-destination",
+      "platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF",
+      "-derivedDataPath",
+      "build/NativeAppDerived",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGN_IDENTITY=-",
+      "DEVELOPMENT_TEAM=",
+      "build"
+    ],
+    "exit_code": 0,
+    "seconds": 6.131
+  }
+]

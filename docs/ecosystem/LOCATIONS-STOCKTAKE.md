@@ -1,3 +1,5 @@
+> Implementation update, 2 November 2026: see [current capability inventory](NATIVE-IMPLEMENTATION.md) and [executed evidence/device checklist](NATIVE-LOCAL-EVIDENCE.md). This brief is preserved as design history; historical unimplemented wording below is superseded.
+
 # Optional rail assignment, stocktaking and research observations
 
 Owner direction, 2 November 2026. Reuse the native scanner for optional rail assignment and stocktaking, with a later connection to the owner's dissertation visual-tracking research. There are **ten upstairs rails** now. The basement expansion will add an **unknown number** of rails. Rail assignment is **not required during initial listing/item creation**. These are future capabilities to accommodate in the architecture; this document does not implement them or authorise live stock changes/research capture.
