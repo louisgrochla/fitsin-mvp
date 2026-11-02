@@ -1,5 +1,7 @@
 # Next-session checkpoint — 2 November 2026
 
+Draft reviews: [Fitsin #1](https://github.com/louisgrochla/fitsin-mvp/pull/1) and [Crosstopher #1](https://github.com/louisgrochla/Crosstopher/pull/1). Both branches are pushed; neither PR is merged.
+
 ## Approved scope and result
 
 Completed the synchronised source audit, synthetic baseline, bounded performance/reliability implementation, contract design, full candidate traceability and local verification plan. New ecosystem features remain gated. No merge, deployment, production migration, marketplace publish/delist, message, paid service or seller-visibility change occurred. Do not mark the app release-ready: native tests/build/device/manual review are pending.
