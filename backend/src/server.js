@@ -19,6 +19,7 @@ import { COMMISSION_RATE, matchSellerPrefix } from './services/sellerConfig.js';
 import { sendDailySummary, sendRotaReminders } from './services/pushJobs.js';
 import { startScheduler } from './services/scheduler.js';
 import { TTLCache } from './utils/cache.js';
+import { withUpstreamDeadline } from './utils/http.js';
 import { DateTime } from 'luxon';
 
 const app = express();
@@ -191,26 +192,13 @@ app.get('/v1/shopify/webhooks', async (_req, res) => {
 });
 
 async function cached(key, producer) {
-  const hit = cache.get(key);
-  if (hit) return { payload: hit, stale: false };
-
-  try {
-    const val = await producer();
-    cache.set(key, val, ttlMs);
-    return { payload: val, stale: false };
-  } catch (error) {
-    const stale = cache.getStale(key, staleMaxMs);
-    if (stale) {
-      console.warn(`Serving stale cache for ${key}: ${error.message}`);
-      return { payload: stale, stale: true };
-    }
-    throw error;
-  }
+  return cache.load(key, () => withUpstreamDeadline(producer), ttlMs, staleMaxMs);
 }
 
 app.get('/v1/today', async (_req, res) => {
   try {
-    const { payload, stale } = await cached('today', () => computeTodayMetrics());
+    const date = DateTime.now().setZone(config.timezone).toFormat('yyyy-LL-dd');
+    const { payload, stale } = await cached(`today:${date}`, () => computeTodayMetrics());
     return res.json({
       ...payload,
       data_delayed: Boolean(stale),
@@ -228,7 +216,7 @@ app.get('/v1/month', async (req, res) => {
       return res.status(400).json({ error: 'Invalid month format. Expected YYYY-MM.' });
     }
 
-    const cacheKey = month ? `month:${month}` : 'month:current';
+    const cacheKey = `month:${month || currentMonthKey(config.timezone)}`;
     const { payload, stale } = await cached(cacheKey, () => computeMonthMetrics(month || null));
     return res.json({
       ...payload,

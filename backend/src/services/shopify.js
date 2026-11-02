@@ -11,7 +11,7 @@ function round2(v) {
   return Math.round(v * 100) / 100;
 }
 
-async function shopifyGraphQL(query, variables = {}) {
+async function shopifyGraphQL(query, variables = {}, retrySafe = true) {
   const accessToken = await getShopifyAccessToken();
   if (!accessToken) {
     throw new Error('Shopify is not connected. Complete OAuth install or set SHOPIFY_ADMIN_TOKEN.');
@@ -19,6 +19,7 @@ async function shopifyGraphQL(query, variables = {}) {
 
   const res = await fetchWithRetry(SHOPIFY_URL, {
     method: 'POST',
+    retrySafe,
     headers: {
       'Content-Type': 'application/json',
       'X-Shopify-Access-Token': accessToken
@@ -90,7 +91,7 @@ export async function ensureOrderWebhook() {
   const data = await shopifyGraphQL(mutation, {
     topic: 'ORDERS_CREATE',
     sub: { callbackUrl, format: 'JSON' }
-  });
+  }, false);
 
   const errors = data.webhookSubscriptionCreate?.userErrors || [];
   if (errors.length) {
