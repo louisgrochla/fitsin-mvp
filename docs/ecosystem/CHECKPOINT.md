@@ -8,7 +8,7 @@ Completed the synchronised source audit, synthetic baseline, bounded performance
 
 | Repository | Base | Branch | Reviewable implementation commits |
 | --- | --- | --- | --- |
-| Fitsin | `19b57ad752cc88a2558ffa09f75c97eac1eba60a` | `codex/foundation-reliability` | `203fe6e` backend; `7b89bae` iOS source + local fixtures |
+| Fitsin | `19b57ad752cc88a2558ffa09f75c97eac1eba60a` | `codex/foundation-reliability` | `203fe6e` backend; `7b89bae` iOS source + local fixtures; `493e422` background completion guard |
 | Crosstopher | `d580b590b8560eb2015dd4ea5733049149c518fc` | `codex/ecosystem-audit` | `20c5250` full-sync grouping + tests |
 
 Documentation/evidence are in the subsequent audit commits on each branch; use `git log` for their full final SHAs. The old claim that OCR/backlog is missing is obsolete. Both required base commits and all specified OCR/backlog files were verified after fetch. Fitsin's 19b57ad correction is read and followed.

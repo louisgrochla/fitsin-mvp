@@ -1,6 +1,6 @@
 # Synthetic baseline and verification evidence
 
-Measured on 2 November 2026, Linux x86_64, Node 22.23.4/npm 10.9.9. Before bases: Fitsin `19b57ad`, Crosstopher `d580b59`. After runtime code: Fitsin `203fe6e` (backend) / `7b89bae` (native source), Crosstopher `20c5250`. Native source is unbuilt. Raw results are committed in `evidence/` in each repository. Earlier pre-synchronisation Crosstopher results were set aside and are not used here.
+Measured on 2 November 2026, Linux x86_64, Node 22.23.4/npm 10.9.9. Before bases: Fitsin `19b57ad`, Crosstopher `d580b59`. After runtime code: Fitsin `203fe6e` (backend) / `493e422` (native source, including background completion guard), Crosstopher `20c5250`. Native source is unbuilt. Raw results are committed in `evidence/` in each repository. Earlier pre-synchronisation Crosstopher results were set aside and are not used here.
 
 ## Fitsin: actual local Express endpoints
 
