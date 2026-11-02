@@ -1,77 +1,54 @@
-# Next-session checkpoint — 2 November 2026
+# Checkpoint — authorised cloud scope complete, 2 November 2026
 
-## Latest direction and slice
+The foundation/reliability work and approved read-only shared-business stock bridge are complete for draft review. Both branches remain unmerged and every integration switch remains disabled by default. **Not release-ready:** seven native regression tests are authored but unexecuted, and the consolidated final local/device batch is pending. Unavailable local tooling did not block cloud completion.
 
-Local Mac/Xcode/device/manual validation is batched at the end, per the owner's updated direction; continue authorised cloud slices first. The initial audience is the existing single Crosstopher seller/business shared by every Fitsin user. Earlier "native checks next" and unresolved audience guidance below is historical and superseded by this decision.
+## Review branches and provenance
 
-The first read-only stock bridge is now implemented behind default-off Worker, backend and native build switches. See [STOCK-BRIDGE.md](STOCK-BRIDGE.md) for its exact contract, configuration and limits. It exposes operational counts only, preserves Crosstopher behavior and adds an independent optional Today card. No credentials/live configuration were installed and nothing was enabled/deployed/merged. Cloud: Fitsin **29** checks and Crosstopher **644** tests pass; root/Worker typechecks and web build pass. Native: **seven** authored tests remain unrun, and the entire final device/manual batch remains pending. All later feature gates stay closed.
+- [Fitsin #1](https://github.com/louisgrochla/fitsin-mvp/pull/1), `codex/foundation-reliability`; resumed from `0006f3e9f596593a3bd07ca3d1e6e91e4f411ebb`, base `19b57ad752cc88a2558ffa09f75c97eac1eba60a`.
+- [Crosstopher #1](https://github.com/louisgrochla/Crosstopher/pull/1), `codex/ecosystem-audit`; resumed from `f04dfcf3c95e338eab9a3312504476cd4651c447`, base `d580b590b8560eb2015dd4ea5733049149c518fc`.
 
+Fetched both remotes, found clean trees and matching supplied heads, retained local `work` branches, and continued the existing PR branches without resets. Final SHAs are the PR branch heads (`git rev-parse HEAD` after fetching); implementation and evidence are committed together. Earlier checkpoints are preserved in [CHECKPOINT-HISTORY.md](CHECKPOINT-HISTORY.md); their old counts and next-gate questions are historical.
 
-Draft reviews: [Fitsin #1](https://github.com/louisgrochla/fitsin-mvp/pull/1) and [Crosstopher #1](https://github.com/louisgrochla/Crosstopher/pull/1). Both branches are pushed; neither PR is merged.
+## Binding owner decisions
 
-## Approved scope and result
+One existing Crosstopher seller/business is shared by everyone using the two applications. Do not add per-person seller restrictions, combine seller records, reassign stock, or weaken foreign-seller boundaries. Existing OCR/backlog is implemented and was not rebuilt. Local Mac/Xcode/simulator/iPhone/manual checks are one final batch. Use Codex only; never invoke Claude/Anthropic tooling or inspect its authentication.
 
-Completed the synchronised source audit, synthetic baseline, bounded performance/reliability implementation, contract design, full candidate traceability and local verification plan. New ecosystem features remain gated. No merge, deployment, production migration, marketplace publish/delist, message, paid service or seller-visibility change occurred. Do not mark the app release-ready: native tests/build/device/manual review are pending.
+No merge, deploy, production migration, live integration activation, marketplace publish/delist, notification/message, or purchase is authorised. No production credentials or bindings were configured. Images, rich push, financial ledgers/reconciliation, OCR expansion and the wider catalogue remain separate gates.
 
-| Repository | Base | Branch | Reviewable implementation commits |
-| --- | --- | --- | --- |
-| Fitsin | `19b57ad752cc88a2558ffa09f75c97eac1eba60a` | `codex/foundation-reliability` | `203fe6e` backend; `7b89bae` iOS source + local fixtures; `493e422` background completion guard |
-| Crosstopher | `d580b590b8560eb2015dd4ea5733049149c518fc` | `codex/ecosystem-audit` | `20c5250` full-sync grouping + tests |
+## Completed result
 
-Documentation/evidence are in the subsequent audit commits on each branch; use `git log` for their full final SHAs. The old claim that OCR/backlog is missing is obsolete. Both required base commits and all specified OCR/backlog files were verified after fetch. Fitsin's 19b57ad correction is read and followed.
+- Preserved/reviewed request coalescing, cache invalidation fencing, shared upstream deadlines, independent native dashboard sections, failed-input retention, uncapped manual aggregation, process-local manual mutation serialization, and complete seller-isolated full-sync assembly/signing.
+- Fixed the bridge's asset routing: the old configuration returned HTTP 200 app HTML for the integration endpoint. `/integrations/fitsin/*` now reaches the Worker even while disabled. No switch is enabled by that routing change.
+- Both bridge sides validate usable 32–1,024 character printable ASCII secrets without whitespace. The Worker refuses a bridge key matching any existing seller login hash. Normal seller authentication is unchanged; never reuse its credentials.
+- The Fitsin consumer captures its configured scope/key, rejects wrong scope, and treats malformed same-scope counts as unavailable rather than a false access revocation. All counters remain validated and allowlisted; no financial/image data is returned.
+- Manual storage now distinguishes a missing store from malformed/unreadable existing data. Reads and mutations fail safely without overwriting damaged bytes; normal creation and recovery still work. Other JSON services, cross-process locking and durable write idempotency are not claimed fixed.
+- Added a repeatable connected verification script in Crosstopher: actual Fitsin Express auth/route → trusted local HTTPS → actual asset router/Worker → disposable D1. It checks all seven nonzero counters, foreign scope, revocation, disablement, missing configuration, recovery, write rejection and unchanged database contents. External Worker calls are blocked and none occurred.
 
-## What changed
+## Executed cloud verification
 
-- Fitsin `backend/src/utils/cache.js`, `utils/http.js`, server cached routes and upstream read declarations: in-flight sharing, invalidation fencing, bounded upstream cancellation including response bodies, safe read retries, London-period cache keys. Existing amounts, commission rules, seller visibility and API shapes remain.
-- Fitsin Today/Month models/views, root lifecycle, warm-up and atomic cache writes: independent results/errors, prior-month isolation, goal from the same snapshot, visible-tab foreground refresh, timer pauses, failed manual-input retention and no concurrent same-model/manual submission. An optional month identity field rejects mismatched legacy caches safely.
-- Native regression source and an independent XcodeGen test spec are provided; the checked-in main Xcode project and signing were not regenerated. The loopback manual fixture has no real integrations.
-- Crosstopher `scope.ts`: group already seller-filtered children once. No row limit, SQL scope, image access, sync protocol, scan confirmation, stock state or marketplace behaviour changed.
-- Audit docs: AUDIT-2026-11-02.md, BASELINE.md, INTEGRATION-CONTRACTS.md, MILESTONES.md, LOCAL-VERIFICATION.md and raw evidence. PRODUCT-PLAN.md's entire catalogue is retained; all 76 A–H bullets are mapped.
+Node **22.23.4**, npm **10.9.9**, `npm ci` in both repositories; lockfiles unchanged. Synthetic data only.
 
-## Validation and limitations
+| Check | Executed result / evidence |
+| --- | --- |
+| Fitsin `NODE_ENV=test npm test` | **33 passing checks**: 32 leaf tests plus one parent; [log](evidence/fitsin-tests-final.txt) |
+| Crosstopher `npm test` | **651 passed**, one opt-in benchmark skipped in this suite; companion `evidence/tests-final.txt` |
+| Root and explicit Worker typechecks | Passed; companion `evidence/typecheck-final.txt` |
+| Crosstopher web build | Passed; existing >500 kB bundle warning remains; companion `evidence/web-build-final.txt` |
+| Connected bridge verification | Passed; companion `scripts/verify-fitsin-bridge.mjs` and `evidence/stock-connected-final.txt` |
+| Fitsin endpoint probes, 461/1,400/5,000 rows | Amounts, stale fallback/recovery pass; 5,000-row eight-client burst uses 200 upstream calls, warm reads use zero; [JSON](evidence/backend-final.json) |
+| Crosstopher opt-in benchmark, same sizes | Passed separately; full snapshots/photo ordering preserved; companion `evidence/list-final.json` |
+| Before-fix regressions | Old routing fails (200 HTML versus expected 404); original manual-store and mutable-configuration cases fail; `routing-before-final.txt` in Crosstopher and [Fitsin log](evidence/regressions-before-final.txt) |
 
-Fitsin 18/18 backend tests pass (baseline 7). Synthetic actual-endpoint probes at 461/1,400/5,000 rows pass amounts, status, stale fallback and recovery assertions. At 5,000, upstream calls per eight-client burst fell 800 → 200; latest cold median 1,677 → 577 ms. Warm reads make zero upstream calls. These are local fixtures, not iPhone or live hosting results.
+A timing-dependent HTTP test initially failed under simultaneous suites/build. It now starts the sequential/parallel requests deterministically and still asserts deadline cancellation of all three; real socket/body cancellation remains covered separately. Final suite passes. Miniflare harness setup issues were resolved against the existing locked API; no dependency upgrades. Timing probes ran alongside other cloud work: 5,000-row medians were 1,261 ms Fitsin and 218 ms unsigned Crosstopher. These are not controlled before/after speed comparisons, device timings, signed-photo benchmarks or live hosting measurements.
 
-Crosstopher 635 tests pass (baseline 634), one opt-in timing test skipped in the ordinary suite and passed separately. Root and explicit Worker typechecks and web build pass; existing large-bundle warning remains. At 5,000 garments the local list median fell 535 → 74 ms with identical row count/bytes. Full unsigned snapshots and mixed photo/listing isolation are tested. Signed-image cost, browser rendering and real D1/R2 latency are unmeasured.
+## Final local batch and remaining gates
 
-Xcode, simulator, iPhone, Apple signing/APNs and shop hardware were unavailable. Four native regression tests are **authored, not executed**. No live OCR photo scoring or marketplace validation occurred. Build/review/manual steps are in LOCAL-VERIFICATION.md, including fixture commands, exact XcodeGen/xcodebuild commands and the sign-off record.
+Use [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md) for commands, all pending checkboxes and sign-off format. In an isolated Mac worktree: run all seven hostless Swift tests; generate/review the main Xcode project and build against loopback fixtures; exercise independent loading, stale/revoked/disabled stock, recovery, failed saves, tab/foreground/background lifecycle and offline/slow networks; check accessibility and representative iPhone performance. Review existing calendar/rota/manual-sale/day/seller/deep-link journeys using approved test data. Check Crosstopher browser identity/outbox isolation, full sync and capture/review on synthetic data; physical printer/scanner/APNs/live-account steps require their explicit later action approval.
 
-Known follow-ups include shared history across endpoints/processes, scoped asynchronous caches, calendar query ordering, file-write concurrency outside manual entries and across processes, webhook verification/deduplication, incomplete deduction reporting and settled-proceeds/refund semantics. This foundation does not make combined finances trustworthy by itself.
+**No unresolved cloud implementation blocker remains within this scope.** Native compilation/device/manual acceptance and actual source origin/seller/edge Access routing/credential provisioning remain unverified prerequisites for a separately approved activation/release. A local simulator does not validate production Access policies or D1/R2 latency.
 
-## Recommended next gate and decisions
+Larger follow-ups stay in [MILESTONES.md](MILESTONES.md): calendar/account-aware cache lifecycle and ordering, wider JSON-storage concurrency, cross-process persistence/idempotency, financial completeness/refund semantics, webhook security/deduplication, and later product gates. These require their own compatibility/identity/data or feature work; this change does not silently expand the approved stock bridge or claim financial reconciliation.
 
-First review these branches and run the local/native checklist; address failures before a separate release approval. Then approve **Gate 2 identity/ownership contracts**, followed by **C1 read-only scoped stock summaries**, not the entire feature catalogue. Images (C2), rich native push (C3) and reconciled finances (T1–T3) remain separate gates.
+## Resume or rollback
 
-The owner needs to decide:
-
-1. Who can see each seller's stock, sales and earnings; whether any owner aggregate is allowed (existing Crosstopher specs forbid cross-seller views).
-2. Exact Shopify account/POS till → shop/seller mappings and whose sales count toward targets; do not infer from historical initials.
-3. Who resolves unknown legacy ownership and ambiguous garment matches; approve the match/discard rules without bulk-changing live items.
-4. Mac/Xcode and representative iPhone/network verification route, reviewer and acceptable measured budgets. No additional paid infrastructure has been assumed.
-
-Capture/review can continue in Crosstopher and the business dashboard in Fitsin by default. Interface consolidation, AI prose, public QR, customer requests, reservations and every wider opportunity remain in MILESTONES.md for later selection.
-
-## Resume and rollback
-
-Fetch both remotes and inspect clean/dirty state before resuming. Verify the required commits remain in ancestry; preserve any new work and rebase task branches carefully if main advances. Select Node 22 and use locked installs; do not invoke Claude/Anthropic or check their auth. Run the evidence commands appropriate to any new edits, then native checks on Mac. No cloud task depends on laptop wakefulness.
-
-Revert individual implementation commits to undo the unshipped foundation; no database or production rollback is needed. Keep the audit/catalogue documents when reverting a runtime change. Never deploy, merge, migrate production, send messages or trigger live publish/delist as a continuation of this checkpoint without its separate authorisation.
-
-## Continuation checkpoint — 2 November 2026
-
-Independent review resumed from Fitsin `05b5f76` and Crosstopher `abff581` on the existing branches. Existing work branches were retained and no dirty changes were present. Read the continuation section in AUDIT-2026-11-02.md for reproduced failures and scope.
-
-- Fitsin manual metrics now include every matching entry, while public list responses retain their 1,000-entry cap. Manual create/delete read-modify-write operations are serialised within one backend process and recover after write rejection. Multi-process storage, other JSON services, corrupt-file handling, durable write idempotency and financial semantics remain follow-ups.
-- Crosstopher runtime grouping passed independent review unchanged. Signed/unsigned full-sync tests now exercise multiple listings and seller-bound photo tokens. Existing OCR/backlog remains untouched and every new ecosystem feature stays gated.
-- Cloud: Fitsin 23 passing checks (22 leaf tests and one parent), actual endpoint probes at all three sizes; Crosstopher 636 passing tests, one opt-in benchmark separately passing, root/Worker typechecks and web build passing with the existing bundle warning. New raw evidence uses `*-continuation.*` names.
-- Native/device: no new evidence. Four Swift regression tests remain authored but unrun. All Xcode, simulator, iPhone, APNs, accessibility and shop hardware checks remain pending. Release-ready remains **false**.
-
-Changes are intended for the same draft PRs. No merge, deployment, live integration action or new feature approval is included.
-
-## Owner direction — shared business and final local validation batch
-
-The owner clarified on 2 November 2026 that Mac/Xcode/device/manual checks should happen at the end of the change set so cloud work can continue while local testing is unavailable. Do not stop each cloud slice for local verification. Keep all unexecuted checks visible and require them before release readiness; merge and deployment remain unauthorised.
-
-Initial scope is one existing Crosstopher seller/business with multiple people sharing access to all its data, across Crosstopher and Fitsin MVP. Preserve Crosstopher's current operation. Per-person seller permissions and multi-seller product expansion are deferred; do not merge/reassign existing seller data or weaken foreign-seller boundaries. The initial audience decision is settled. Exact external account bindings and secure server-side bridge configuration remain technical work, rather than reasons to ask the same audience question again.
-
-Continue the authorised foundation work in cloud, recording tests per slice. New ecosystem features retain their individual gates; this direction does not approve the entire backlog. The final local checklist is a batched acceptance step, not the next blocker to cloud progress.
+Read this checkpoint, [AUDIT-2026-11-02.md](AUDIT-2026-11-02.md), [STOCK-BRIDGE.md](STOCK-BRIDGE.md), [INTEGRATION-CONTRACTS.md](INTEGRATION-CONTRACTS.md), [MILESTONES.md](MILESTONES.md) and [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md). Fetch and inspect trees before continuing; preserve remote advances and unrelated changes. Revert selected unshipped implementation commits if needed; keep evidence/catalogue documents. No production rollback or migration is needed. Do not mark either PR ready, merge, deploy or activate as a consequence of cloud test success.

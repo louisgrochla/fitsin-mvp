@@ -20,8 +20,9 @@ function round2(v) {
 }
 
 async function readAll() {
-  const parsed = await readJsonFile(config.manualEntriesFile, null);
-  return Array.isArray(parsed?.entries) ? parsed.entries : [];
+  const parsed = await readJsonFile(config.manualEntriesFile, () => ({ entries: [] }), { strict: true });
+  if (!Array.isArray(parsed?.entries)) throw new Error('Invalid manual entries store.');
+  return parsed.entries;
 }
 
 async function writeAll(entries) {

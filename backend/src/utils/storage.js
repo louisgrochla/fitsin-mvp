@@ -10,11 +10,14 @@ export function dataPath(fileName) {
   return path.resolve(base, fileName);
 }
 
-export async function readJsonFile(fileName, fallback) {
+export async function readJsonFile(fileName, fallback, { strict = false } = {}) {
   try {
     const raw = await fs.readFile(dataPath(fileName), 'utf8');
     return JSON.parse(raw);
-  } catch {
+  } catch (error) {
+    // A missing store can start empty. A damaged or unreadable existing store
+    // must not silently become empty before a read-modify-write transaction.
+    if (strict && error.code !== 'ENOENT') throw error;
     return typeof fallback === 'function' ? fallback() : fallback;
   }
 }

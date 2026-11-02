@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, mkdir } from 'node:fs/promises';
+import { mkdtemp, rm, mkdir, writeFile, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DateTime } from 'luxon';
@@ -54,5 +54,30 @@ test('manual sales storage and aggregation', async (t) => {
     config.manualEntriesFile = 'entries.json';
     const added = await createManualEntry({ amount: 1, source: 'cash' }, zone);
     assert.ok((await listManualEntries({}, zone)).some((e) => e.id === added.id));
+  });
+
+  await t.test('an unreadable or corrupt store fails without replacing existing data', async () => {
+    const file = join(directory, config.manualEntriesFile);
+    for (const contents of ['{broken', 'null', '{}', '{"entries":{}}']) {
+      await writeFile(file, contents);
+      await assert.rejects(createManualEntry({ amount: 1, source: 'cash' }, zone));
+      await assert.rejects(deleteManualEntry('existing'));
+      await assert.rejects(listManualEntries({}, zone));
+      await assert.rejects(dailyManualSalesMap(DateTime.fromISO('2026-11-01', { zone }), DateTime.fromISO('2026-12-01', { zone }), zone));
+      assert.equal(await readFile(file, 'utf8'), contents);
+    }
+    config.manualEntriesFile = 'blocked'; // existing directory, not a missing file
+    await assert.rejects(listManualEntries({}, zone), { code: 'EISDIR' });
+    config.manualEntriesFile = 'entries.json';
+    await writeJsonFile(config.manualEntriesFile, { entries: [] });
+    const recovered = await createManualEntry({ amount: 1, source: 'cash' }, zone);
+    assert.equal((await listManualEntries({}, zone))[0].id, recovered.id);
+  });
+
+  await t.test('a genuinely missing store can still be created', async () => {
+    config.manualEntriesFile = 'new.json';
+    assert.deepEqual(await listManualEntries({}, zone), []);
+    const created = await createManualEntry({ amount: 1, source: 'cash' }, zone);
+    assert.equal((await listManualEntries({}, zone))[0].id, created.id);
   });
 });

@@ -20,6 +20,12 @@ test('bridge disabled or incomplete configuration produces no request', async (t
   assert.equal((await createStockSummary({ ...bridge, enabled: false })()).status, 'disabled');
   assert.equal((await createStockSummary(bridge)()).status, 'unavailable'); // HTTP forbidden outside explicit test fixture
   assert.equal((await createStockSummary({ ...bridge, token: '' }, { allowLoopback: true })()).status, 'unavailable');
+  for (const token of ['x'.repeat(1025), 'x'.repeat(32) + ' ', 'x'.repeat(32) + '\n', 'x'.repeat(32) + 'é']) {
+    assert.equal((await createStockSummary({ ...bridge, token }, { allowLoopback: true })()).status, 'unavailable');
+  }
+  for (const baseUrl of ['https://user:password@synthetic.invalid', 'https://synthetic.invalid/path', 'https://synthetic.invalid?query=1']) {
+    assert.equal((await createStockSummary({ ...bridge, baseUrl })()).status, 'unavailable');
+  }
   assert.equal(calls, 0);
 });
 test('only GETs the fixed read route, coalesces overlap, validates scope and strips extra fields', async (t) => {
@@ -55,11 +61,48 @@ test('scope mismatch, malformed counts and revoked credentials never become succ
   assert.equal((await read()).status, 'fresh');
   for (mode of ['scope', 'counts', 'revoked']) {
     const result = await read();
-    assert.equal(result.status, 'unauthorized');
+    assert.equal(result.status, mode === 'counts' ? 'unavailable' : 'unauthorized');
     assert.equal(result.data, null);
     assert.equal(result.complete, false);
   }
   mode = 'healthy';
+  assert.equal((await read()).status, 'fresh');
+});
+
+test('captures configuration so a later mutation cannot relabel an in-flight response', async (t) => {
+  let release;
+  const entered = new Promise((resolve) => { release = resolve; });
+  let respond;
+  const bridge = await fixture(t, (req, res) => {
+    assert.equal(req.headers.authorization, `Bearer ${secret}`);
+    respond = () => res.end(JSON.stringify(payload()));
+    release();
+  });
+  const read = createStockSummary(bridge, { allowLoopback: true });
+  const pending = read();
+  await entered;
+  bridge.sellerId = 'other';
+  bridge.token = 'different-secret-0000000000000000';
+  respond();
+  const result = await pending;
+  assert.equal(result.status, 'fresh');
+  assert.equal(result.sellerId, 'shared');
+});
+
+test('rejects invalid schema and every malformed count without fabricating zeros', async (t) => {
+  let body = payload();
+  const bridge = await fixture(t, (_req, res) => res.end(JSON.stringify(body)));
+  const read = createStockSummary(bridge, { allowLoopback: true });
+  for (const key of Object.keys(counts)) {
+    for (const value of [null, -1, 0.5, '1', Number.MAX_SAFE_INTEGER + 1]) {
+      body = { ...payload(), counts: { ...counts, [key]: value } };
+      assert.deepEqual(await read(), { schemaVersion: 1, status: 'unavailable', complete: false, sellerId: 'shared', data: null });
+    }
+  }
+  for (body of [{ ...payload(), schemaVersion: 2 }, { ...payload(), generatedAt: 'invalid' }, { ...payload(), counts: {} }]) {
+    assert.equal((await read()).status, 'unavailable');
+  }
+  body = { ...payload(), counts: Object.fromEntries(Object.keys(counts).map((key) => [key, 0])) };
   assert.equal((await read()).status, 'fresh');
 });
 test('stalled bodies time out and later refresh recovers without retries', async (t) => {

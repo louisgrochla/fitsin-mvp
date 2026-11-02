@@ -5,6 +5,7 @@ const countKeys = ['drafts', 'active', 'reserved', 'pendingManual', 'doubleSales
 // No seller selector, financial adapter or stock commands. Configuration is
 // captured once per process so an old flight cannot cross a scope change.
 export function createStockSummary(bridge, { allowLoopback = false, timeoutMs = 5000 } = {}) {
+  bridge = { ...bridge };
   let flight;
   const disabled = { schemaVersion: 1, status: 'disabled', complete: false, data: null };
   if (!bridge.enabled) return async () => disabled;
@@ -13,7 +14,7 @@ export function createStockSummary(bridge, { allowLoopback = false, timeoutMs = 
     base = new URL(bridge.baseUrl);
     const loopback = allowLoopback && base.protocol === 'http:' && ['127.0.0.1', '[::1]'].includes(base.hostname);
     if ((!loopback && base.protocol !== 'https:') || base.username || base.password || base.search || base.hash || base.pathname !== '/') throw new Error('invalid origin');
-    if (!bridge.sellerId || !bridge.token || bridge.token.trim().length < 32) throw new Error('incomplete bridge');
+    if (!bridge.sellerId?.trim() || !/^[\x21-\x7e]{32,1024}$/.test(bridge.token || '')) throw new Error('incomplete bridge');
   } catch {
     return async () => ({ ...disabled, status: 'unavailable' });
   }
@@ -46,11 +47,12 @@ export function createStockSummary(bridge, { allowLoopback = false, timeoutMs = 
           }
         } finally { await reader.cancel(); }
         const payload = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-        if (payload.schemaVersion !== 1 || payload.sellerId !== bridge.sellerId ||
+        if (payload?.sellerId !== bridge.sellerId) return unavailable('unauthorized');
+        if (payload.schemaVersion !== 1 ||
             typeof payload.generatedAt !== 'string' || !Number.isFinite(Date.parse(payload.generatedAt)) ||
             !countKeys.every((key) => Number.isSafeInteger(payload.counts?.[key]) && payload.counts[key] >= 0)) {
-          // A scope mismatch must also discard the client's previous stock.
-          return unavailable('unauthorized');
+          // Malformed same-scope data is an outage, not credential revocation.
+          return unavailable();
         }
         return {
           schemaVersion: 1, status: 'fresh', complete: true, sellerId: bridge.sellerId,

@@ -47,16 +47,24 @@ test('deadline aborts a stalled body and clears retry backoff', async (t) => {
 
 test('parallel and sequential pages share one end-to-end budget', async (t) => {
   let calls = 0;
-  const url = await fixture(t, (_req, res) => {
+  const signals = [];
+  // Start the parallel pages deterministically. Real socket/body cancellation
+  // is covered above; a 60ms scheduling window made this case flaky under load.
+  t.mock.method(globalThis, 'fetch', async (_url, { signal }) => {
     calls++;
-    const timer = setTimeout(() => res.end('{}'), 100);
-    res.on('close', () => clearTimeout(timer));
+    signals.push(signal);
+    if (calls === 1) return new Response('{}');
+    return new Promise((_resolve, reject) => {
+      signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+    });
   });
+  const url = 'https://synthetic.invalid';
   await assert.rejects(withUpstreamDeadline(async () => {
     await (await fetchWithRetry(url)).json();
     await Promise.all([fetchWithRetry(url), fetchWithRetry(url)]);
-  }, 160));
+  }, 80));
   assert.equal(calls, 3);
+  assert.ok(signals.every((signal) => signal.aborted));
 });
 
 test('caller cancellation is preserved', async (t) => {

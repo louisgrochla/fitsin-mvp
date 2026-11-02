@@ -1,6 +1,6 @@
 # Integration contracts — approved scope and later proposals
 
-The initial read-only stock bridge is implemented behind default-off switches; its exact shipped contract is in STOCK-BRIDGE.md. The wider image, ledger and section contracts below remain proposals, not assertions about existing APIs. The owner has approved the initial shared single-seller audience below. Source-account binding and bridge authentication still need implementation before summaries can be exposed. Keep both applications initially.
+The initial read-only stock bridge is implemented behind default-off switches; its exact shipped contract is in STOCK-BRIDGE.md. The wider image, ledger and section contracts below remain proposals, not assertions about existing APIs. The owner has approved the initial shared single-seller audience below. Server-bound seller selection and dedicated bridge authentication are implemented; actual source bindings/credentials and production edge access remain unconfigured for a later approved activation. Keep both applications initially.
 
 ## Ownership and authority
 
@@ -19,7 +19,7 @@ The initial read-only stock bridge is implemented behind default-off switches; i
 
 One existing Crosstopher seller represents the business for this phase. Multiple people have access to all of that business's data in Crosstopher and Fitsin MVP; do not build per-person stock, sales or earnings visibility restrictions for this phase. Preserve Crosstopher as it currently operates. This is a shared audience decision, not a request to combine existing seller records, reassign garments, remove seller scoping, change marketplace credentials or grant public access.
 
-For a future bridge, bind the existing seller on the server and retain authenticated access. Staff names/local PINs need not become distinct seller accounts. Keep source-account mapping separate from staff identity and do not infer it from initials. Foreign-seller isolation tests remain useful boundary tests even though the deployed initial audience uses one seller. Multi-seller product work is deferred.
+The initial bridge binds the existing seller on the server and retains authenticated access. Staff names/local PINs need not become distinct seller accounts. Keep source-account mapping separate from staff identity and do not infer it from initials. Foreign-seller isolation tests remain useful boundary tests even though the deployed initial audience uses one seller. Multi-seller product work is deferred.
 
 Mac/Xcode/device/manual checks are batched at the end of the intended change set. Continue authorised cloud implementation and verification before that batch; native checks are not a prerequisite for each cloud slice. Release readiness still requires that final native/device pass. Feature gates remain explicit: this scope decision does not approve the whole candidate catalogue.
 
