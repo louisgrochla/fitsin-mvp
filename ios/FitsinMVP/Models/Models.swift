@@ -19,6 +19,8 @@ struct MonthDay: Codable, Identifiable {
 }
 
 struct MonthMetrics: Codable {
+    // Optional for compatibility with cache files written by older app builds.
+    let month: String?
     let month_goal: Double?
     let mtd_actual: Double
     let mtd_target: Double

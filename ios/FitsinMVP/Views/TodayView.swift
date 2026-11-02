@@ -77,15 +77,18 @@ struct TodayView: View {
                         if let data = vm.data {
                             heroSection(data: data)
                             statsRow(data: data)
-                            weekSection
-                            rotaSection
-                            manualEntrySection
-                        } else {
-                            ProgressView()
+                        } else if vm.isLoadingToday || vm.errorText == nil {
+                            ProgressView("Loading Today…")
                                 .frame(maxWidth: .infinity, minHeight: 200)
+                        } else {
+                            Button("Retry Today") { Task { await vm.load() } }
+                                .padding()
                         }
 
                         notices
+                        weekSection
+                        rotaSection
+                        manualEntrySection
                     }
                     .opacity(animateIn ? 1 : 0)
                     .offset(y: animateIn ? 0 : 16)
@@ -105,7 +108,7 @@ struct TodayView: View {
                 async let loadRota: Void = rotaVM.load()
                 async let loadSched: Void = rotaVM.loadSchedule(userName: userName)
                 _ = await (loadToday, loadRota, loadSched)
-                vm.startAutoRefresh(intervalSeconds: 60)
+                if !Task.isCancelled { vm.startAutoRefresh(intervalSeconds: 60) }
             }
             .onDisappear { vm.stopAutoRefresh() }
             .navigationBarTitleDisplayMode(.inline)
@@ -248,6 +251,18 @@ struct TodayView: View {
                 .foregroundStyle(BrandTheme.ink)
                 .padding(.horizontal, 20)
 
+            if vm.isLoadingWeek { ProgressView("Refreshing week…").padding(.horizontal, 20) }
+            if let error = vm.weekErrorText {
+                InlineNotice(text: error, tone: BrandTheme.danger, systemImage: "wifi.exclamationmark")
+                    .padding(.horizontal, 20)
+            }
+            if let updated = vm.weekUpdatedAt {
+                Text("Week updated \(formatTimestamp(updated))")
+                    .font(.caption).foregroundStyle(BrandTheme.inkSoft).padding(.horizontal, 20)
+            }
+            if vm.weekAhead.isEmpty && !vm.isLoadingWeek && vm.weekErrorText == nil {
+                Text("No upcoming days available.").font(.caption).padding(.horizontal, 20)
+            }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(vm.weekAhead) { day in
@@ -558,13 +573,14 @@ struct TodayView: View {
                 let description = selectedSource == .other ? manualDescription.trimmingCharacters(in: .whitespacesAndNewlines) : nil
                 let dateString = Self.manualDateFormatter.string(from: manualDate)
                 Task {
-                    await vm.addManualEntry(
+                    let saved = await vm.addManualEntry(
                         amount: amount,
                         source: selectedSource,
                         description: description?.isEmpty == true ? nil : description,
                         note: manualNote.trimmingCharacters(in: .whitespacesAndNewlines),
                         date: dateString
                     )
+                    guard saved else { return }
                     // Clear only the per-sale fields; keep source + date so a run
                     // of same-day sales can be logged rapidly. Refocus the amount.
                     manualAmount = ""
@@ -596,14 +612,11 @@ struct TodayView: View {
 
     private var notices: some View {
         VStack(spacing: 8) {
-            if let warning = vm.data?.warning, !warning.isEmpty {
-                InlineNotice(text: warning, tone: BrandTheme.danger, systemImage: "exclamationmark.triangle.fill")
-            }
             if let error = vm.errorText {
                 InlineNotice(text: error, tone: BrandTheme.danger, systemImage: "wifi.exclamationmark")
             }
             if let status = vm.manualEntryStatus {
-                InlineNotice(text: status, tone: BrandTheme.success, systemImage: "checkmark.circle.fill")
+                InlineNotice(text: status, tone: vm.manualEntryFailed ? BrandTheme.danger : BrandTheme.success, systemImage: vm.manualEntryFailed ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
             }
         }
         .padding(.horizontal, 20)

@@ -126,13 +126,8 @@ final class APIClient {
     }
 
     func warmUp() async {
-        guard let url = URL(string: "/v1/today", relativeTo: baseURL) else { return }
-        var req = URLRequest(url: url)
-        req.httpMethod = "HEAD"
+        guard var req = try? request(path: "/health", method: "HEAD") else { return }
         req.timeoutInterval = 10
-        if let code = KeychainStore.readCode(), !code.isEmpty {
-            req.setValue(code, forHTTPHeaderField: "X-APP-CODE")
-        }
         _ = try? await URLSession.shared.data(for: req)
     }
 
