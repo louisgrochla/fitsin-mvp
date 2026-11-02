@@ -1,4 +1,12 @@
-# Checkpoint — authorised cloud scope complete, 2 November 2026
+# Checkpoint — foundation reviewed; native workspace direction, 2 November 2026
+
+## Latest owner direction — native read/write workspace
+
+The owner clarified that Fitsin must become a fully native iOS read/write business workspace, integrating Crosstopher's capabilities with a redesigned mobile UI/UX: stock actions, camera/photos, Bluetooth stickers/tags and useful combinations with sales/payments and events. The read-only summary/browser handoff is not the completed product. [NATIVE-WORKSPACE.md](NATIVE-WORKSPACE.md) records the current brief, existing capability map, proposed native design, first complete journey and exploratory options. It is design/planning work; the expanded native workflows have not yet been implemented.
+
+The owner confirmed **one shared Fitsin business first; separate businesses later**. Preserve shared staff access and all existing foreign-seller boundaries; do not build per-person seller restrictions or merge seller records. New development direction does not grant merge/deploy, production credential/migration, live marketplace, message/notification or purchase permission. Local success was reported conversationally; the PR evidence still does not identify executed native results, so do not rewrite the historical test status as passed without the local evidence.
+
+## Completed foundation scope
 
 The foundation/reliability work and approved read-only shared-business stock bridge are complete for draft review. Both branches remain unmerged and every integration switch remains disabled by default. **Not release-ready:** seven native regression tests are authored but unexecuted, and the consolidated final local/device batch is pending. Unavailable local tooling did not block cloud completion.
 
@@ -13,7 +21,7 @@ Fetched both remotes, found clean trees and matching supplied heads, retained lo
 
 One existing Crosstopher seller/business is shared by everyone using the two applications. Do not add per-person seller restrictions, combine seller records, reassign stock, or weaken foreign-seller boundaries. Existing OCR/backlog is implemented and was not rebuilt. Local Mac/Xcode/simulator/iPhone/manual checks are one final batch. Use Codex only; never invoke Claude/Anthropic tooling or inspect its authentication.
 
-No merge, deploy, production migration, live integration activation, marketplace publish/delist, notification/message, or purchase is authorised. No production credentials or bindings were configured. Images, rich push, financial ledgers/reconciliation, OCR expansion and the wider catalogue remain separate gates.
+No merge, deploy, production migration, live integration activation, marketplace publish/delist, notification/message, or purchase is authorised. No production credentials or bindings were configured. The new native direction includes garment photos, camera capture, Bluetooth printing and scoped stock writes. Rich push, new financial/payment operations, paid services and live external actions retain their separate requirements; broader catalogue items remain experiments to select rather than a claim that all are implemented.
 
 ## Completed result
 

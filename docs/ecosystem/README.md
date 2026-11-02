@@ -2,7 +2,11 @@
 
 Saved 2 November 2026. Owner: Louis. Status: cloud implementation for review; local acceptance pending.
 
-## Read in this order
+## Current product direction
+
+The owner has clarified a native iOS read/write business workspace: redesigned stock workflows, photos, Bluetooth tags/stickers, and connected business practices. Start with [CHECKPOINT.md](CHECKPOINT.md) and [NATIVE-WORKSPACE.md](NATIVE-WORKSPACE.md). The implemented default-off stock summary is a foundation component, not the finished integration. Preserve the existing web app/backend while building native coverage.
+
+## Historical packet order
 
 1. [Product plan and complete opportunity list](PRODUCT-PLAN.md)
 2. [Performance, reliability and usability plan](PERFORMANCE-PLAN.md)

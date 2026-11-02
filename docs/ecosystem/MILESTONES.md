@@ -1,5 +1,7 @@
 # Dependency-ordered delivery backlog
 
+Latest direction: [NATIVE-WORKSPACE.md](NATIVE-WORKSPACE.md) defines the native read/write Fitsin workspace and supersedes a read-only summary/link as the final product. Native photos/capture/printing and existing stock actions belong in that destination; design and development proceed in complete journeys. Existing financial/provider/live-action requirements remain. The owner confirmed one shared Fitsin business first, with separate businesses later.
+
 All product ideas are retained. F0, the manual-store aggregation/serialization/corruption safeguards of F1, and the first default-off I1/C1 read-only bridge are implemented for review; see STOCK-BRIDGE.md. “Existing” means source/test evidence at the synchronised commits; it does not assert live deployment or hardware success. Remaining work requires its feature/release gate. Cross-seller access, paid services, publishing, delisting, migrations and notifications are not implicitly authorised by this plan.
 
 ## Current owner decisions — 2 November 2026
