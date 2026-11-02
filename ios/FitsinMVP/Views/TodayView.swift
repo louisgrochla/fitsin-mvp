@@ -87,6 +87,7 @@ struct TodayView: View {
                         }
 
                         notices
+                        if vm.showsStockSummary { stockSection }
                         weekSection
                         rotaSection
                         manualEntrySection
@@ -240,6 +241,40 @@ struct TodayView: View {
                 .minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity)
+    }
+
+    // MARK: - Shared stock
+
+    private var stockSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Crosstopher stock")
+                .font(.headline)
+            if vm.isLoadingStock { ProgressView("Refreshing stock…") }
+            if let counts = vm.stockSummary?.data {
+                LabeledContent("Awaiting manual removal", value: "\(counts.pendingManual)")
+                LabeledContent("Double-sale conflicts", value: "\(counts.doubleSales)")
+                LabeledContent("Failed listings", value: "\(counts.failedListings)")
+                LabeledContent("Listing questions", value: "\(counts.openQuestions)")
+                Divider()
+                LabeledContent("Draft garments", value: "\(counts.drafts)")
+                LabeledContent("Active garments", value: "\(counts.active)")
+                LabeledContent("Reserved garments", value: "\(counts.reserved)")
+                Text("Active includes stock on the till; it does not mean listed online.")
+                    .font(.caption).foregroundStyle(BrandTheme.inkSoft)
+                if let updated = vm.stockSummary?.lastSuccessAt {
+                    Text("Last fetched \(formatTimestamp(updated))")
+                        .font(.caption).foregroundStyle(BrandTheme.inkSoft)
+                }
+                if let url = vm.stockSummary?.destination {
+                    Link("Open Crosstopher", destination: url)
+                }
+            }
+            if let error = vm.stockErrorText {
+                InlineNotice(text: error, tone: BrandTheme.danger, systemImage: "wifi.exclamationmark")
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     // MARK: - Week

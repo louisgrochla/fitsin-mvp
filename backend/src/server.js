@@ -1,3 +1,4 @@
+import { createStockSummary } from './services/stockSummary.js';
 import express from 'express';
 import crypto from 'node:crypto';
 import helmet from 'helmet';
@@ -27,6 +28,7 @@ const cache = new TTLCache();
 const oauthStateCache = new TTLCache();
 const ttlMs = config.cacheTtlSeconds * 1000;
 const staleMaxMs = config.staleCacheMaxAgeSeconds * 1000;
+const readStockSummary = createStockSummary(config.crosstopher);
 
 app.use(helmet({ hsts: config.nodeEnv === 'production' }));
 
@@ -119,6 +121,13 @@ app.post('/webhooks/shopify/order-created', express.raw({ type: 'application/jso
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(requireAppCode);
+
+// Shared business audience uses the existing Fitsin access boundary. The
+// dedicated Crosstopher credential stays server-side and cannot write stock.
+app.get('/v1/stock-summary', async (_req, res) => {
+  res.set('Cache-Control', 'no-store');
+  return res.json(await readStockSummary());
+});
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });

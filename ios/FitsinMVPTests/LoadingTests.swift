@@ -17,6 +17,66 @@ final class LoadingTests: XCTestCase {
                      data_delayed: false, warning: nil)
     }
 
+    private func stock(status: String = "fresh", seller: String? = "shared") -> StockSummaryResponse {
+        StockSummaryResponse(schemaVersion: 1, status: status, complete: status == "fresh",
+                             sellerId: seller, lastSuccessAt: "2026-11-02T12:00:00Z",
+                             sourceObservedAt: "2026-11-02T12:00:00Z", url: "https://synthetic.invalid",
+                             data: status == "fresh" ? StockCounts(drafts: 3, active: 8, reserved: 1,
+                                 pendingManual: 2, doubleSales: 0, failedListings: 4, openQuestions: 5) : nil)
+    }
+
+    func testStockDoesNotBlockTodayAndFailureIsIndependent() async {
+        let gate = Gate<StockSummaryResponse>()
+        let visible = expectation(description: "Sales visible before stock")
+        let vm = TodayViewModel(usesCache: false, fetchStock: { try await gate.wait() },
+                                fetchToday: { self.today() }, fetchMonth: { self.month() })
+        let observation = vm.$data.compactMap { $0 }.prefix(1).sink { _ in visible.fulfill() }
+        let task = Task { await vm.load() }
+        await fulfillment(of: [visible], timeout: 1)
+        XCTAssertEqual(vm.data?.actual_today, 25)
+        XCTAssertNil(vm.stockSummary)
+        await gate.fail()
+        await task.value
+        XCTAssertNil(vm.errorText)
+        XCTAssertNotNil(vm.stockErrorText)
+        XCTAssertFalse(vm.isLoadingStock)
+        withExtendedLifetime(observation) {}
+    }
+
+    func testStockOutageRetainsTimestampButRevocationAndScopeChangeDiscardData() async {
+        var next = stock()
+        let vm = TodayViewModel(usesCache: false, fetchStock: { next },
+                                fetchToday: { self.today() }, fetchMonth: { self.month() })
+        await vm.load()
+        XCTAssertEqual(vm.stockSummary?.data?.active, 8)
+        next = stock(status: "unavailable")
+        await vm.load()
+        XCTAssertEqual(vm.stockSummary?.lastSuccessAt, "2026-11-02T12:00:00Z")
+        XCTAssertNotNil(vm.stockErrorText)
+        next = stock(status: "unauthorized")
+        await vm.load()
+        XCTAssertNil(vm.stockSummary)
+        next = stock()
+        await vm.load()
+        next = stock(status: "unavailable", seller: "other")
+        await vm.load()
+        XCTAssertNil(vm.stockSummary)
+    }
+
+    func testDisabledStockIsHiddenAndFetchIsOptional() async {
+        let disabled = TodayViewModel(usesCache: false, fetchStock: { self.stock(status: "disabled", seller: nil) },
+                                      fetchToday: { self.today() }, fetchMonth: { self.month() })
+        await disabled.load()
+        XCTAssertFalse(disabled.showsStockSummary)
+        XCTAssertNil(disabled.stockSummary)
+        XCTAssertNil(disabled.stockErrorText)
+        let absent = TodayViewModel(usesCache: false, fetchStock: nil,
+                                    fetchToday: { self.today() }, fetchMonth: { self.month() })
+        await absent.load()
+        XCTAssertFalse(absent.showsStockSummary)
+        XCTAssertEqual(absent.data?.actual_today, 25)
+    }
+
     func testTodayAppearsBeforeSlowWeekAndSurvivesItsFailure() async {
         let gate = Gate<MonthMetrics>()
         let visible = expectation(description: "Today visible while week is pending")

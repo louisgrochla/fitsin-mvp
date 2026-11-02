@@ -1,5 +1,12 @@
 # Next-session checkpoint — 2 November 2026
 
+## Latest direction and slice
+
+Local Mac/Xcode/device/manual validation is batched at the end, per the owner's updated direction; continue authorised cloud slices first. The initial audience is the existing single Crosstopher seller/business shared by every Fitsin user. Earlier "native checks next" and unresolved audience guidance below is historical and superseded by this decision.
+
+The first read-only stock bridge is now implemented behind default-off Worker, backend and native build switches. See [STOCK-BRIDGE.md](STOCK-BRIDGE.md) for its exact contract, configuration and limits. It exposes operational counts only, preserves Crosstopher behavior and adds an independent optional Today card. No credentials/live configuration were installed and nothing was enabled/deployed/merged. Cloud: Fitsin **29** checks and Crosstopher **644** tests pass; root/Worker typechecks and web build pass. Native: **seven** authored tests remain unrun, and the entire final device/manual batch remains pending. All later feature gates stay closed.
+
+
 Draft reviews: [Fitsin #1](https://github.com/louisgrochla/fitsin-mvp/pull/1) and [Crosstopher #1](https://github.com/louisgrochla/Crosstopher/pull/1). Both branches are pushed; neither PR is merged.
 
 ## Approved scope and result

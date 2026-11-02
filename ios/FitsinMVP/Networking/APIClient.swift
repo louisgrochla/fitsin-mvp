@@ -67,6 +67,14 @@ final class APIClient {
         }
     }
 
+    static var stockSummaryEnabled: Bool {
+        (Bundle.main.object(forInfoDictionaryKey: "STOCK_SUMMARY_ENABLED") as? String)?.uppercased() == "YES"
+    }
+
+    func getStockSummary() async throws -> StockSummaryResponse {
+        try await fetch(StockSummaryResponse.self, path: "/v1/stock-summary")
+    }
+
     func getToday() async throws -> TodayMetrics {
         try await fetch(TodayMetrics.self, path: "/v1/today")
     }

@@ -263,3 +263,33 @@ struct DaySalesResponse: Codable {
     let data_delayed: Bool?
     let warning: String?
 }
+
+// Read-only operational counts for the configured shared Crosstopher seller.
+// Active is a stock lifecycle state, not a claim of online publication.
+struct StockCounts: Codable {
+    let drafts: Int
+    let active: Int
+    let reserved: Int
+    let pendingManual: Int
+    let doubleSales: Int
+    let failedListings: Int
+    let openQuestions: Int
+}
+
+struct StockSummaryResponse: Codable {
+    let schemaVersion: Int
+    let status: String
+    let complete: Bool
+    let sellerId: String?
+    let lastSuccessAt: String?
+    let sourceObservedAt: String?
+    let url: String?
+    let data: StockCounts?
+
+    var destination: URL? {
+        guard let url, let destination = URL(string: url),
+              destination.scheme == "https", destination.host != nil,
+              destination.user == nil, destination.password == nil else { return nil }
+        return destination
+    }
+}

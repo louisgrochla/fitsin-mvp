@@ -1,5 +1,5 @@
 // Local manual-check server. No production integrations, persistence or credential logging.
-// MODE=week-failure|today-failure|unauthorized|malformed|save-failure|healthy
+// MODE=week-failure|today-failure|unauthorized|malformed|save-failure|stock-failure|stock-unauthorized|stock-disabled|healthy
 import { createServer } from 'node:http';
 import { DateTime } from 'luxon';
 import { randomUUID } from 'node:crypto';
@@ -16,6 +16,18 @@ const server = createServer(async (req, res) => {
   if (url.pathname === '/health') return send({ ok: true });
   if (mode === 'unauthorized') return send({ error: 'Synthetic expired access' }, 401);
   if (mode === 'malformed') { res.writeHead(200); return res.end('{broken'); }
+  if (url.pathname === '/v1/stock-summary') {
+    await new Promise((resolve) => setTimeout(resolve, Number(process.env.STOCK_DELAY_MS || 0)));
+    if (mode === 'stock-disabled') return send({ schemaVersion: 1, status: 'disabled', complete: false, data: null });
+    if (mode === 'stock-failure' || mode === 'stock-unauthorized') return send({
+      schemaVersion: 1, status: mode === 'stock-unauthorized' ? 'unauthorized' : 'unavailable',
+      sellerId: 'synthetic-shared', complete: false, data: null
+    });
+    return send({ schemaVersion: 1, status: 'fresh', sellerId: 'synthetic-shared', complete: true,
+      lastSuccessAt: now().toISO(), sourceObservedAt: now().toISO(), url: 'https://synthetic.invalid',
+      data: { drafts: 3, active: 8, reserved: 1, pendingManual: 2, doubleSales: 0, failedListings: 4, openQuestions: 5 }
+    });
+  }
   if (url.pathname === '/v1/today') {
     if (mode === 'today-failure') return send({ error: 'Synthetic Today failure' }, 502);
     return send({ actual_today: 25, target_today: 100, month_goal: 1000,

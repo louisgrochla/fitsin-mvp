@@ -10,6 +10,7 @@ settings:
   base:
     PRODUCT_BUNDLE_IDENTIFIER: com.fitsin.mvp
     SWIFT_VERSION: 5.0
+    STOCK_SUMMARY_ENABLED: "NO"
 targets:
   FitsinMVP:
     type: application

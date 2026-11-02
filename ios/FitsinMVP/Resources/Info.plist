@@ -59,6 +59,8 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>STOCK_SUMMARY_ENABLED</key>
+	<string>$(STOCK_SUMMARY_ENABLED)</string>
 	<key>API_BASE_URL</key>
 	<string>$(API_BASE_URL)</string>
 </dict>

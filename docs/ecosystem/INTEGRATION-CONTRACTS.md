@@ -1,6 +1,6 @@
-# Proposed integration contracts — design only
+# Integration contracts — approved scope and later proposals
 
-No bridge, new endpoint, ledger, account mapping or visibility change is implemented. Names below are proposed contracts, not assertions about existing APIs. The owner has approved the initial shared single-seller audience below. Source-account binding and bridge authentication still need implementation before summaries can be exposed. Keep both applications initially.
+The initial read-only stock bridge is implemented behind default-off switches; its exact shipped contract is in STOCK-BRIDGE.md. The wider image, ledger and section contracts below remain proposals, not assertions about existing APIs. The owner has approved the initial shared single-seller audience below. Source-account binding and bridge authentication still need implementation before summaries can be exposed. Keep both applications initially.
 
 ## Ownership and authority
 
@@ -52,3 +52,5 @@ Proposed verification fixtures (not implemented ledger tests): duplicate webhook
 A proposed summary response has `schemaVersion`, authorised scope, and independently versioned sections for removals/conflicts, listing failures, capture/review/print/attachment, draft completion, recent sales, rota/events and target progress. Each section has `status` (fresh/stale/unavailable/unauthorised), `lastSuccessAt`, `sourceUpdatedAt`, `receivedAt`, `complete`, nullable data and an authorised deep link. Successful empty is data with zero rows; unavailable is not zero. A failed stock section cannot block sales or calendar; image failure cannot block money.
 
 Start with a **read-only scoped stock summary bridge** after identity approval. Images require transaction-to-garment matching as a separate slice. Native rich push needs its own notification service extension, APNs payload/device validation, recipient/privacy agreement and expiring image retrieval. Durable event ingestion, retry/deduplication, reconciliation and incomplete-data indicators precede combined financial reporting. No paid infrastructure is assumed.
+
+Implemented C1 slice: see [STOCK-BRIDGE.md](STOCK-BRIDGE.md). It uses one configured shared-business seller, a dedicated read-only credential and no disk cache. Per-person bridge identity is not required for the approved initial audience. All later scope/finance/image gates remain separate.

@@ -20,6 +20,12 @@ final class TodayViewModel: ObservableObject {
     @Published var manualEntryStatus: String?
     @Published var manualEntryFailed = false
     @Published var isSavingManualEntry = false
+    @Published var stockSummary: StockSummaryResponse?
+    @Published var stockErrorText: String?
+    @Published var isLoadingStock = false
+    @Published private var stockDisabled = false
+    var showsStockSummary: Bool { fetchStock != nil && !stockDisabled }
+    private let fetchStock: (() async throws -> StockSummaryResponse)?
     private var refreshTask: Task<Void, Never>?
     private var loadTask: Task<Void, Never>?
     private var weekMonth: String?
@@ -30,6 +36,7 @@ final class TodayViewModel: ObservableObject {
 
     init(
         usesCache: Bool = true,
+        fetchStock: (() async throws -> StockSummaryResponse)? = APIClient.stockSummaryEnabled ? { try await APIClient.shared.getStockSummary() } : nil,
         fetchToday: @escaping () async throws -> TodayMetrics = { try await APIClient.shared.getToday() },
         fetchMonth: @escaping () async throws -> MonthMetrics = { try await APIClient.shared.getMonth() },
         saveEntry: @escaping (Double, ManualSource, String?, String?, String?) async throws -> Void = { amount, source, description, note, date in
@@ -37,6 +44,7 @@ final class TodayViewModel: ObservableObject {
         }
     ) {
         self.usesCache = usesCache
+        self.fetchStock = fetchStock
         self.fetchToday = fetchToday
         self.fetchMonth = fetchMonth
         self.saveEntry = saveEntry
@@ -83,7 +91,8 @@ final class TodayViewModel: ObservableObject {
         let task = Task {
             async let today: Void = refreshToday()
             async let week: Void = refreshWeek()
-            _ = await (today, week)
+            async let stock: Void = refreshStock()
+            _ = await (today, week, stock)
             loadTask = nil
         }
         loadTask = task
@@ -115,6 +124,39 @@ final class TodayViewModel: ObservableObject {
             weekErrorText = payload.warning
         } catch {
             weekErrorText = failureMessage(error, section: "week", hasData: weekUpdatedAt != nil)
+        }
+    }
+
+    private func refreshStock() async {
+        guard let fetchStock else { return }
+        isLoadingStock = true
+        defer { isLoadingStock = false }
+        do {
+            let payload = try await fetchStock()
+            stockDisabled = payload.status == "disabled"
+            if stockDisabled {
+                stockSummary = nil
+                stockErrorText = nil
+            } else if payload.schemaVersion == 1 && payload.status == "fresh" && payload.complete,
+                      payload.sellerId != nil, payload.data != nil {
+                stockSummary = payload
+                stockErrorText = nil
+            } else {
+                // Revocation, disabled/missing configuration and scope changes
+                // must discard prior data. Ordinary same-scope outages may
+                // retain the last success with its original fetch timestamp.
+                if payload.status == "unauthorized" || payload.sellerId == nil || payload.sellerId != stockSummary?.sellerId {
+                    stockSummary = nil
+                }
+                stockErrorText = payload.status == "unauthorized"
+                    ? "Crosstopher access needs attention."
+                    : (stockSummary == nil ? "Stock summary unavailable. Pull to retry." : "Showing saved stock summary; refresh failed. Pull to retry.")
+            }
+        } catch {
+            if case APIError.unauthorized = error { stockSummary = nil }
+            stockErrorText = stockSummary == nil
+                ? "Stock summary unavailable. Pull to retry."
+                : "Showing saved stock summary; refresh failed. Pull to retry."
         }
     }
 

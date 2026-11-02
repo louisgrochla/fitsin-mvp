@@ -1,6 +1,6 @@
 # Fitsin ecosystem programme
 
-Saved 2 November 2026. Owner: Louis. Status: planning and handover only.
+Saved 2 November 2026. Owner: Louis. Status: cloud implementation for review; local acceptance pending.
 
 ## Read in this order
 
@@ -44,3 +44,5 @@ The synchronised cloud audit and bounded foundation implementation are complete 
 | 6 | Stock intelligence, events and selected wider ideas | Retained candidates |
 
 Update this tracker after each approved delivery slice with evidence, remaining checks and the next decision. Never mark native/device validation complete based solely on a cloud code review.
+
+Latest owner direction and implemented opt-in stock slice: [Shared-business stock bridge](STOCK-BRIDGE.md). Batch Mac/Xcode/device checks at the end; keep later features gated and release-ready false.
