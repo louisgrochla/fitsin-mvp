@@ -1,0 +1,24 @@
+COMMAND: ['xcodebuild', '-project', 'FitsinMVP.xcodeproj', '-scheme', 'FitsinMVP', '-destination', 'platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF', '-derivedDataPath', 'build/NativeAppDerived', 'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGN_IDENTITY=-', 'DEVELOPMENT_TEAM=', 'API_BASE_URL=http:/$()/127.0.0.1:31988', 'WORKSPACE_API_URL=http:/$()/127.0.0.1:31989', 'NATIVE_WORKSPACE_ENABLED=YES', 'STOCK_SUMMARY_ENABLED=NO', 'build']
+CWD: /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project FitsinMVP.xcodeproj -scheme FitsinMVP -destination "platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF" -derivedDataPath build/NativeAppDerived CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= "API_BASE_URL=http:/$()/127.0.0.1:31988" "WORKSPACE_API_URL=http:/$()/127.0.0.1:31989" NATIVE_WORKSPACE_ENABLED=YES STOCK_SUMMARY_ENABLED=NO build
+
+Build settings from command line:
+    API_BASE_URL = http:/$()/127.0.0.1:31988
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGNING_ALLOWED = YES
+    DEVELOPMENT_TEAM =
+    NATIVE_WORKSPACE_ENABLED = YES
+    STOCK_SUMMARY_ENABLED = NO
+    WORKSPACE_API_URL = http:/$()/127.0.0.1:31989
+
+Resolve Package Graph
+
+
+    /usr/bin/codesign --force --sign - --entitlements /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Intermediates.noindex/FitsinMVP.build/Debug-iphonesimulator/FitsinMVP.build/FitsinMVP.app.xcent --timestamp\=none --generate-entitlement-der /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Products/Debug-iphonesimulator/FitsinMVP.app
+
+Validate /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Products/Debug-iphonesimulator/FitsinMVP.app (in target 'FitsinMVP' from project 'FitsinMVP')
+    cd /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios
+    builtin-validationUtility /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Products/Debug-iphonesimulator/FitsinMVP.app -shallow-bundle -infoplist-subpath Info.plist
+
+** BUILD SUCCEEDED **

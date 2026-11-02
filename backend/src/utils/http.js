@@ -1,30 +1,40 @@
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import { AsyncLocalStorage } from 'node:async_hooks';
+import { setTimeout as delay } from 'node:timers/promises';
+
+const context = new AsyncLocalStorage();
+
+// Every upstream page/parallel branch of a cached response shares this budget,
+// below the app's 20-second timeout. Abort also reaches response body reads.
+export async function withUpstreamDeadline(producer, timeoutMs = 18000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new DOMException('Upstream deadline exceeded', 'TimeoutError')), timeoutMs);
+  try {
+    const result = await context.run(controller.signal, producer);
+    controller.signal.throwIfAborted();
+    return result;
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+  }
+}
 
 export async function fetchWithRetry(url, options = {}, retries = 2) {
-  let lastError;
-  for (let attempt = 0; attempt <= retries; attempt += 1) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-
+  const { retrySafe = ['GET', 'HEAD'].includes((options.method || 'GET').toUpperCase()), ...fetchOptions } = options;
+  const signal = AbortSignal.any([context.getStore(), options.signal, AbortSignal.timeout(15000)].filter(Boolean));
+  const attempts = retrySafe ? retries : 0;
+  for (let attempt = 0; ; attempt += 1) {
+    signal.throwIfAborted();
     try {
-      const res = await fetch(url, { ...options, signal: controller.signal });
-      clearTimeout(timeout);
-
-      if (res.status >= 500 && attempt < retries) {
-        await wait(400 * (attempt + 1));
-        continue;
+      const response = await fetch(url, { ...fetchOptions, signal });
+      if (response.status >= 500 && attempt < attempts) {
+        await response.body?.cancel();
+      } else {
+        return response;
       }
-
-      return res;
     } catch (error) {
-      clearTimeout(timeout);
-      lastError = error;
-      if (attempt < retries) {
-        await wait(400 * (attempt + 1));
-        continue;
-      }
+      signal.throwIfAborted();
+      if (attempt >= attempts) throw error;
     }
+    await delay(400 * (attempt + 1), undefined, { signal });
   }
-
-  throw lastError;
 }

@@ -14,7 +14,10 @@ function notionHeaders() {
 }
 
 async function notionRequest(url, options) {
-  const res = await fetchWithRetry(url, options);
+  const res = await fetchWithRetry(url, {
+    ...options,
+    retrySafe: options.method === 'GET' || (options.method === 'POST' && url === NOTION_URL)
+  });
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Notion API error ${res.status}: ${text}`);

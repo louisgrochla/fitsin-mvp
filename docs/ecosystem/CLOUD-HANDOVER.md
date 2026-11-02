@@ -1,5 +1,7 @@
 # Cloud environment and implementation handover
 
+**Historical cloud preparation only.** The owner now wants a local Mac Codex implementation session. Use [CHECKPOINT.md](CHECKPOINT.md) and [NEW-SESSION-GOAL.md](NEW-SESSION-GOAL.md) for the current scope and instructions. Do not create a cloud environment or stop at the old foundation/feature gate below. The remainder preserves earlier setup observations; its paths, revisions, commands and verification status must not be treated as current results.
+
 Prepared 2 November 2026. No environment has been created or tested by this documentation task. No cloud task has been started.
 
 ## Repository access

@@ -1,10 +1,10 @@
 # Fitsin + Crosstopher: product plan
 
-Date: 2 November 2026. This preserves the discussion and broad feature catalogue. All new features remain candidates for owner gating, not an instruction to implement everything.
+Updated 2 November 2026. The owner has clarified the destination: a fully native, read/write Fitsin business workspace with redesigned workflows and the existing Crosstopher capabilities integrated. See [NATIVE-WORKSPACE.md](NATIVE-WORKSPACE.md) for the current brief, source coverage, proposed design, first complete journey and experiments. The wider catalogue below is retained for exploration; it is not blanket permission for live actions or every speculative feature.
 
 ## Purpose and starting point
 
-Proposed product roles: Fitsin helps the team understand and run the business; Crosstopher manages garments, tags and listings. Start by connecting existing interfaces, not by rewriting them into one product.
+Fitsin becomes the native iOS workspace for running the business, including read/write stock, camera capture and Bluetooth tags/stickers. Crosstopher remains the stock/marketplace backend authority and its existing web app continues to operate. Design the native workflows for the phone; do not reproduce the web layout or treat an external link as completion. The earlier summaries-and-links-first plan describes the completed foundation slice, not the full product destination.
 
 User-reported figures, not a fresh production query:
 
@@ -23,13 +23,13 @@ Performance and usability are prerequisite work: see PERFORMANCE-PLAN.md. Adding
 
 ## A. Stock backlog and OCR
 
-Reuse Crosstopher's existing capture, OCR, review and print capabilities; inventory what already works before designing replacements.
+Reuse the existing stock/scan/print contracts and useful fixtures. The owner explicitly requests a native OCR overhaul: [NATIVE-SCANNER.md](NATIVE-SCANNER.md) defines continuous live recognition, grid/tag overlays, automatic acceptance of strong readings and live guidance/correction for exceptions. The web OCR engine and photo-review UX are not the required native design.
 
-Desired journey: select rail/session → photograph old tags → review OCR → match an existing record or create a garment/SKU → queue printing → confirm physical attachment. Capture must not automatically imply a trustworthy inventory record or a completed retag.
+Desired native journey: optionally select a session/rail → point the live scanner at a tag → automatically capture a stable reading, correcting exceptions → match an existing record or create a garment/SKU → queue printing → confirm physical attachment. Capture must not automatically imply a trustworthy inventory record or a completed retag.
 
 Candidate features:
 
-- Batch photograph a rail without filling forms between shots.
+- Scan tags continuously along a rail without a shutter/review form for every clean tag; keep garment photography separate.
 - Offline capture, resumable uploads and review sessions; retain work through app closure.
 - OCR suggestions for description, size, price and seller initials, with uncertain fields highlighted.
 - Explicit confirmation of ambiguous/crossed-out prices and seller ownership; do not silently invent values.
@@ -90,7 +90,7 @@ Show sales versus target, monthly pace, image-led recent sales, rota and upcomin
 - In-store garments ready to go online.
 - Manual transactions awaiting a match.
 
-Prioritise urgent sales/stock issues above routine backlog. Open the relevant Crosstopher item/task from each card. Show last successful update per section and independent failure/retry states. Start any briefing with deterministic summaries; optional AI prose must remain grounded in measured facts.
+Prioritise urgent sales/stock issues above routine backlog. Open the relevant native item/task workflow from each card; use external handoffs only where the provider requires them. Show last successful update per section and independent failure/retry states. Start any briefing with deterministic summaries; optional AI prose must remain grounded in measured facts.
 
 ## E. Existing stock to online stock
 
@@ -118,6 +118,8 @@ Prioritise urgent sales/stock issues above routine backlog. Open the relevant Cr
 - Tag-price mismatch warnings after changes; do not silently overwrite physical tag state.
 
 ## G. Events and team operations
+
+Owner expansion: ten upstairs rails, unknown basement expansion, and optional later rail assignment by barcode batch. Listing creation must not require a rail. See [LOCATIONS-STOCKTAKE.md](LOCATIONS-STOCKTAKE.md) for assignment versus stocktake, movement history, last-confirmed observations and the later dissertation visual-tracking interface.
 
 - Link an event to selected garments, preparation checklist and missing tag/photo checks.
 - Explicit event-sale attribution and post-event performance; same-day sales are not automatically event sales.
@@ -148,13 +150,13 @@ Proposed starting ownership:
 - Crosstopher owns garment identity, listing lifecycle and stock transitions.
 - Shopify owns its order/payment/refund facts; equivalent marketplace/manual facts need their own provenance.
 - Fitsin owns targets and business-facing views; audit the actual calendar/rota authorities rather than assuming a README is current.
-- The integration exposes scoped summaries and links first. Later financial records retain source account, external order/line identity, currency, event timestamps, actual amounts and adjustments. Manual records need stable internal IDs too.
+- The completed foundation exposes a scoped read-only summary; the new native workspace requires separate authenticated read/write contracts and full native workflows. Later financial records retain source account, external order/line identity, currency, event timestamps, actual amounts and adjustments. Manual records need stable internal IDs too.
 - Deduplicate by transaction provenance, not garment SKU alone. A returned garment can legitimately sell again.
 - Store money in a consistent exact representation (e.g. integer minor units) and define conversion from current decimal amounts.
 - Use Europe/London business dates, preserving original timestamps. Separate payment method, channel and location.
 - Preserve explicit unknown/unmatched ownership and provenance instead of guessing.
 - A read-only bridge must not bypass seller isolation. Decide named identity and access before exposing seller summaries through the old shared app access.
-- One stock authority: later Fitsin actions call Crosstopher commands, not independent inventory writes.
+- One stock authority: native Fitsin actions call Crosstopher commands, not independent inventory writes.
 - Durable updates, retry/deduplication and periodic reconciliation are required before trusting combined money totals.
 
 Verified local caveats from the exploration:
@@ -166,7 +168,9 @@ Verified local caveats from the exploration:
 - Crosstopher supports seller-derived Access/token authentication. Documentation about exact deployment/auth state is not proof of live configuration.
 - Existing Crosstopher specifications deliberately exclude cross-seller views, reporting and some wider features. The ideas here propose scope extensions; the owner must gate them, and any accepted changes should update those specifications explicitly.
 
-## Delivery sequence and gates
+## Historical catalogue sequence and gates
+
+The native-first implementation sequence in NATIVE-WORKSPACE.md supersedes the summary/link endpoint implied by this earlier sequence. Keep the data/provider/action dependencies below when selecting experiments.
 
 0. Prepare both repositories, inspect deployment/contract reality, establish performance and usability baseline.
 1. Make Fitsin reliably usable: loading, caching, request orchestration, errors and navigation. Avoid an unmeasured rewrite.

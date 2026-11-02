@@ -67,6 +67,14 @@ final class APIClient {
         }
     }
 
+    static var stockSummaryEnabled: Bool {
+        (Bundle.main.object(forInfoDictionaryKey: "STOCK_SUMMARY_ENABLED") as? String)?.uppercased() == "YES"
+    }
+
+    func getStockSummary() async throws -> StockSummaryResponse {
+        try await fetch(StockSummaryResponse.self, path: "/v1/stock-summary")
+    }
+
     func getToday() async throws -> TodayMetrics {
         try await fetch(TodayMetrics.self, path: "/v1/today")
     }
@@ -126,13 +134,8 @@ final class APIClient {
     }
 
     func warmUp() async {
-        guard let url = URL(string: "/v1/today", relativeTo: baseURL) else { return }
-        var req = URLRequest(url: url)
-        req.httpMethod = "HEAD"
+        guard var req = try? request(path: "/health", method: "HEAD") else { return }
         req.timeoutInterval = 10
-        if let code = KeychainStore.readCode(), !code.isEmpty {
-            req.setValue(code, forHTTPHeaderField: "X-APP-CODE")
-        }
         _ = try? await URLSession.shared.data(for: req)
     }
 

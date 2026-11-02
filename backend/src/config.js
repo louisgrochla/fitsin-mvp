@@ -47,6 +47,12 @@ export const config = {
     netSalesMode: process.env.SHOPIFY_NET_SALES_MODE || 'subtotal_ex_tax_ship',
     targetGrowthPct: Number(process.env.SHOPIFY_TARGET_GROWTH_PCT || 0)
   },
+  crosstopher: {
+    enabled: process.env.CROSSTOPHER_BRIDGE_ENABLED === 'true',
+    baseUrl: process.env.CROSSTOPHER_BASE_URL || '',
+    sellerId: process.env.CROSSTOPHER_SELLER_ID || '',
+    token: process.env.CROSSTOPHER_BRIDGE_TOKEN || ''
+  },
   notion: {
     token: process.env.NOTION_TOKEN || '',
     dbId: process.env.NOTION_DB_ID || '',

@@ -5,13 +5,24 @@ import { readJsonFile, writeJsonFile } from '../utils/storage.js';
 
 const VALID_SOURCES = new Set(['vinted', 'website', 'cash', 'other']);
 
+// Serialise the complete read-modify-write operation in this process. Atomic
+// rename alone prevents partial JSON, but cannot prevent lost updates. Multiple
+// backend processes still require a transactional shared store.
+let pendingMutation = Promise.resolve();
+function mutateEntries(operation) {
+  const result = pendingMutation.then(operation);
+  pendingMutation = result.catch(() => {});
+  return result;
+}
+
 function round2(v) {
   return Math.round(v * 100) / 100;
 }
 
 async function readAll() {
-  const parsed = await readJsonFile(config.manualEntriesFile, null);
-  return Array.isArray(parsed?.entries) ? parsed.entries : [];
+  const parsed = await readJsonFile(config.manualEntriesFile, () => ({ entries: [] }), { strict: true });
+  if (!Array.isArray(parsed?.entries)) throw new Error('Invalid manual entries store.');
+  return parsed.entries;
 }
 
 async function writeAll(entries) {
@@ -56,11 +67,13 @@ export async function createManualEntry(input, timezone) {
     created_at: new Date().toISOString()
   };
 
-  const entries = await readAll();
-  entries.push(entry);
-  entries.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
-  await writeAll(entries);
-  return entry;
+  return mutateEntries(async () => {
+    const entries = await readAll();
+    entries.push(entry);
+    entries.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+    await writeAll(entries);
+    return entry;
+  });
 }
 
 export async function listManualEntries({ from, to, limit = 200 } = {}, timezone) {
@@ -77,24 +90,29 @@ export async function deleteManualEntry(entryId) {
   const id = String(entryId || '').trim();
   if (!id) throw new Error('Entry id is required.');
 
-  const entries = await readAll();
-  const deleted = entries.find((entry) => entry.id === id);
-  if (!deleted) {
-    throw new Error('Manual entry not found.');
-  }
+  return mutateEntries(async () => {
+    const entries = await readAll();
+    const deleted = entries.find((entry) => entry.id === id);
+    if (!deleted) {
+      throw new Error('Manual entry not found.');
+    }
 
-  const next = entries.filter((entry) => entry.id !== id);
-  await writeAll(next);
-  return deleted;
+    const next = entries.filter((entry) => entry.id !== id);
+    await writeAll(next);
+    return deleted;
+  });
 }
 
 export async function dailyManualSalesMap(startDate, endDateExclusive, timezone) {
   const from = startDate.toFormat('yyyy-LL-dd');
   const to = endDateExclusive.minus({ days: 1 }).toFormat('yyyy-LL-dd');
-  const entries = await listManualEntries({ from, to, limit: 5000 }, timezone);
+  // Metrics must cover the entire period, independently of the public list's
+  // response-size cap. readAll already materialises this JSON-backed store.
+  const entries = await readAll();
   const map = new Map();
 
   for (const entry of entries) {
+    if (entry.date < from || entry.date > to) continue;
     map.set(entry.date, round2((map.get(entry.date) || 0) + Number(entry.amount || 0)));
   }
   return map;

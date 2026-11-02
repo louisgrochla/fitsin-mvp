@@ -1,0 +1,59 @@
+{
+  "node": "v22.23.4",
+  "samples": 5,
+  "upstreamDelayMs": 2,
+  "concurrentClients": 8,
+  "sizes": [
+    {
+      "size": 461,
+      "coldMedianMs": 294.6868599999998,
+      "coldP95Ms": 368.99919000000006,
+      "coldUpstreamCalls": [
+        80,
+        80,
+        80,
+        70,
+        80
+      ],
+      "warmMs": 2.46176800000012,
+      "warmCalls": 0,
+      "monthPayloadBytes": 1506,
+      "staleFallback": true,
+      "recovered": true
+    },
+    {
+      "size": 1400,
+      "coldMedianMs": 556.7951700000003,
+      "coldP95Ms": 580.5731360000009,
+      "coldUpstreamCalls": [
+        224,
+        224,
+        224,
+        224,
+        224
+      ],
+      "warmMs": 2.0832850000006147,
+      "warmCalls": 0,
+      "monthPayloadBytes": 1508,
+      "staleFallback": true,
+      "recovered": true
+    },
+    {
+      "size": 5000,
+      "coldMedianMs": 1677.3865590000005,
+      "coldP95Ms": 1711.8941549999981,
+      "coldUpstreamCalls": [
+        800,
+        800,
+        800,
+        800,
+        800
+      ],
+      "warmMs": 2.3403950000029,
+      "warmCalls": 0,
+      "monthPayloadBytes": 1510,
+      "staleFallback": true,
+      "recovered": true
+    }
+  ]
+}

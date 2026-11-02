@@ -1,0 +1,122 @@
+
+> fitsin-backend@0.1.0 test
+> node --test
+
+TAP version 13
+# Subtest: cold concurrent readers share a producer; warm reads do no work
+ok 1 - cold concurrent readers share a producer; warm reads do no work
+  ---
+  duration_ms: 1.406665
+  type: 'test'
+  ...
+# Subtest: different keys do not share values or failures
+ok 2 - different keys do not share values or failures
+  ---
+  duration_ms: 1.917516
+  type: 'test'
+  ...
+# Subtest: delete fences old work and does not erase a newer flight
+ok 3 - delete fences old work and does not erase a newer flight
+  ---
+  duration_ms: 0.432744
+  type: 'test'
+  ...
+# Subtest: clear fences old work and does not erase a newer flight
+ok 4 - clear fences old work and does not erase a newer flight
+  ---
+  duration_ms: 0.239341
+  type: 'test'
+  ...
+# Subtest: failure uses bounded stale data, then a later request can recover
+ok 5 - failure uses bounded stale data, then a later request can recover
+  ---
+  duration_ms: 1.69529
+  type: 'test'
+  ...
+# Subtest: GET retries transient 5xx and stops at its cap
+ok 6 - GET retries transient 5xx and stops at its cap
+  ---
+  duration_ms: 431.787032
+  type: 'test'
+  ...
+# Subtest: POST/PATCH do not retry unless a read is explicitly declared safe
+ok 7 - POST/PATCH do not retry unless a read is explicitly declared safe
+  ---
+  duration_ms: 413.427721
+  type: 'test'
+  ...
+# Subtest: unauthorized responses are not retried
+ok 8 - unauthorized responses are not retried
+  ---
+  duration_ms: 4.905223
+  type: 'test'
+  ...
+# Subtest: deadline aborts a stalled body and clears retry backoff
+ok 9 - deadline aborts a stalled body and clears retry backoff
+  ---
+  duration_ms: 163.96945
+  type: 'test'
+  ...
+# Subtest: parallel and sequential pages share one end-to-end budget
+ok 10 - parallel and sequential pages share one end-to-end budget
+  ---
+  duration_ms: 164.346118
+  type: 'test'
+  ...
+# Subtest: caller cancellation is preserved
+ok 11 - caller cancellation is preserved
+  ---
+  duration_ms: 1.195727
+  type: 'test'
+  ...
+# Subtest: smart targets redistribute shortfall across remaining open days
+ok 12 - smart targets redistribute shortfall across remaining open days
+  ---
+  duration_ms: 21.825824
+  type: 'test'
+  ...
+# Subtest: smart targets keep base targets when no month goal is set
+ok 13 - smart targets keep base targets when no month goal is set
+  ---
+  duration_ms: 0.663552
+  type: 'test'
+  ...
+# Subtest: smart targets lower remaining projections when today is over target
+ok 14 - smart targets lower remaining projections when today is over target
+  ---
+  duration_ms: 1.795344
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate handles empty history
+ok 15 - computeTargetForDate handles empty history
+  ---
+  duration_ms: 17.816876
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate computes positive target with history
+ok 16 - computeTargetForDate computes positive target with history
+  ---
+  duration_ms: 0.931117
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate returns 0 for Sundays
+ok 17 - computeTargetForDate returns 0 for Sundays
+  ---
+  duration_ms: 0.348216
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate prefers same-month-last-year weekday average
+ok 18 - computeTargetForDate prefers same-month-last-year weekday average
+  ---
+  duration_ms: 0.633137
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1283.299877

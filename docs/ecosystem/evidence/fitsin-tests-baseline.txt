@@ -1,0 +1,56 @@
+
+> fitsin-backend@0.1.0 test
+> node --test
+
+TAP version 13
+# Subtest: smart targets redistribute shortfall across remaining open days
+ok 1 - smart targets redistribute shortfall across remaining open days
+  ---
+  duration_ms: 34.85075
+  type: 'test'
+  ...
+# Subtest: smart targets keep base targets when no month goal is set
+ok 2 - smart targets keep base targets when no month goal is set
+  ---
+  duration_ms: 0.796041
+  type: 'test'
+  ...
+# Subtest: smart targets lower remaining projections when today is over target
+ok 3 - smart targets lower remaining projections when today is over target
+  ---
+  duration_ms: 1.727736
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate handles empty history
+ok 4 - computeTargetForDate handles empty history
+  ---
+  duration_ms: 33.030398
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate computes positive target with history
+ok 5 - computeTargetForDate computes positive target with history
+  ---
+  duration_ms: 0.983143
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate returns 0 for Sundays
+ok 6 - computeTargetForDate returns 0 for Sundays
+  ---
+  duration_ms: 0.428717
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate prefers same-month-last-year weekday average
+ok 7 - computeTargetForDate prefers same-month-last-year weekday average
+  ---
+  duration_ms: 0.845355
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 149.919101

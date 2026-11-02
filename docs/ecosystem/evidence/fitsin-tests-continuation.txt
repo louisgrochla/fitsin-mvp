@@ -1,0 +1,153 @@
+
+> fitsin-backend@0.1.0 test
+> node --test
+
+TAP version 13
+# Subtest: cold concurrent readers share a producer; warm reads do no work
+ok 1 - cold concurrent readers share a producer; warm reads do no work
+  ---
+  duration_ms: 2.364962
+  type: 'test'
+  ...
+# Subtest: different keys do not share values or failures
+ok 2 - different keys do not share values or failures
+  ---
+  duration_ms: 1.724966
+  type: 'test'
+  ...
+# Subtest: delete fences old work and does not erase a newer flight
+ok 3 - delete fences old work and does not erase a newer flight
+  ---
+  duration_ms: 0.265841
+  type: 'test'
+  ...
+# Subtest: clear fences old work and does not erase a newer flight
+ok 4 - clear fences old work and does not erase a newer flight
+  ---
+  duration_ms: 0.177147
+  type: 'test'
+  ...
+# Subtest: failure uses bounded stale data, then a later request can recover
+ok 5 - failure uses bounded stale data, then a later request can recover
+  ---
+  duration_ms: 2.040622
+  type: 'test'
+  ...
+# Subtest: GET retries transient 5xx and stops at its cap
+ok 6 - GET retries transient 5xx and stops at its cap
+  ---
+  duration_ms: 435.681362
+  type: 'test'
+  ...
+# Subtest: POST/PATCH do not retry unless a read is explicitly declared safe
+ok 7 - POST/PATCH do not retry unless a read is explicitly declared safe
+  ---
+  duration_ms: 424.217966
+  type: 'test'
+  ...
+# Subtest: unauthorized responses are not retried
+ok 8 - unauthorized responses are not retried
+  ---
+  duration_ms: 4.401639
+  type: 'test'
+  ...
+# Subtest: deadline aborts a stalled body and clears retry backoff
+ok 9 - deadline aborts a stalled body and clears retry backoff
+  ---
+  duration_ms: 163.846445
+  type: 'test'
+  ...
+# Subtest: parallel and sequential pages share one end-to-end budget
+ok 10 - parallel and sequential pages share one end-to-end budget
+  ---
+  duration_ms: 162.871373
+  type: 'test'
+  ...
+# Subtest: caller cancellation is preserved
+ok 11 - caller cancellation is preserved
+  ---
+  duration_ms: 0.929835
+  type: 'test'
+  ...
+# Subtest: manual sales storage and aggregation
+    # Subtest: aggregates every matching entry while keeping the public list bounded
+    ok 1 - aggregates every matching entry while keeping the public list bounded
+      ---
+      duration_ms: 32.204069
+      type: 'test'
+      ...
+    # Subtest: parallel confirmed creates all survive
+    ok 2 - parallel confirmed creates all survive
+      ---
+      duration_ms: 29.745104
+      type: 'test'
+      ...
+    # Subtest: parallel delete and create preserve both operations
+    ok 3 - parallel delete and create preserve both operations
+      ---
+      duration_ms: 4.251722
+      type: 'test'
+      ...
+    # Subtest: a failed write does not block subsequent writes
+    ok 4 - a failed write does not block subsequent writes
+      ---
+      duration_ms: 7.90389
+      type: 'test'
+      ...
+    1..4
+ok 12 - manual sales storage and aggregation
+  ---
+  duration_ms: 84.769007
+  type: 'test'
+  ...
+# Subtest: smart targets redistribute shortfall across remaining open days
+ok 13 - smart targets redistribute shortfall across remaining open days
+  ---
+  duration_ms: 34.543042
+  type: 'test'
+  ...
+# Subtest: smart targets keep base targets when no month goal is set
+ok 14 - smart targets keep base targets when no month goal is set
+  ---
+  duration_ms: 0.698225
+  type: 'test'
+  ...
+# Subtest: smart targets lower remaining projections when today is over target
+ok 15 - smart targets lower remaining projections when today is over target
+  ---
+  duration_ms: 2.537403
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate handles empty history
+ok 16 - computeTargetForDate handles empty history
+  ---
+  duration_ms: 17.531204
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate computes positive target with history
+ok 17 - computeTargetForDate computes positive target with history
+  ---
+  duration_ms: 1.01944
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate returns 0 for Sundays
+ok 18 - computeTargetForDate returns 0 for Sundays
+  ---
+  duration_ms: 0.401467
+  type: 'test'
+  ...
+# Subtest: computeTargetForDate prefers same-month-last-year weekday average
+ok 19 - computeTargetForDate prefers same-month-last-year weekday average
+  ---
+  duration_ms: 0.987201
+  type: 'test'
+  ...
+1..19
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1345.796805

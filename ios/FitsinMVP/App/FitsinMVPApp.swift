@@ -9,13 +9,20 @@ struct FitsinMVPApp: App {
     @StateObject private var calendarAuth = CalendarAuthManager()
 
     init() {
-        Task { await APIClient.shared.warmUp() }
+        if !Self.workspaceEnabled { Task { await APIClient.shared.warmUp() } }
     }
+
+    static var workspaceEnabled: Bool { (Bundle.main.object(forInfoDictionaryKey: "NATIVE_WORKSPACE_ENABLED") as? String) == "YES" }
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if session.isFullyAuthenticated {
+                if Self.workspaceEnabled {
+                    WorkspaceRoot()
+                        .onAppear { CalendarService.shared.authManager = calendarAuth }
+                        .environmentObject(session)
+                        .environmentObject(calendarAuth)
+                } else if session.isFullyAuthenticated {
                     RootTabView()
                         .environmentObject(session)
                         .environmentObject(calendarAuth)

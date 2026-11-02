@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DaySalesView: View {
     let date: String
+    @Environment(\.nativeWorkspace) private var workspace
 
     @StateObject private var vm = DaySalesViewModel()
 
@@ -159,6 +160,9 @@ struct DaySalesView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(BrandTheme.ink)
                     .fixedSize(horizontal: false, vertical: true)
+                if let workspace, let sku = line.sku, let shop = line.source_shop {
+                    WorkspaceSaleLink(model: workspace, sku: sku, shop: shop)
+                }
                 if line.is_commission, let seller = line.seller {
                     Text("\(seller) · you keep 15%")
                         .font(.caption2.weight(.bold))

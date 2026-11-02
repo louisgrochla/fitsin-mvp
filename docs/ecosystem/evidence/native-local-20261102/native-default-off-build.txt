@@ -1,0 +1,27 @@
+COMMAND: ['xcodebuild', '-project', 'FitsinMVP.xcodeproj', '-scheme', 'FitsinMVP', '-destination', 'platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF', '-derivedDataPath', 'build/NativeAppDerived', 'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGN_IDENTITY=-', 'DEVELOPMENT_TEAM=', 'build']
+CWD: /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project FitsinMVP.xcodeproj -scheme FitsinMVP -destination "platform=iOS Simulator,id=68F5F60D-FF23-4EC5-9258-BF0C04F560EF" -derivedDataPath build/NativeAppDerived CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= build
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGNING_ALLOWED = YES
+    DEVELOPMENT_TEAM =
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  Promises: https://github.com/google/promises.git @ 2.4.1
+
+
+    /usr/bin/codesign --force --sign - --entitlements /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Intermediates.noindex/FitsinMVP.build/Debug-iphonesimulator/FitsinMVP.build/FitsinMVP.app.xcent --timestamp\=none --generate-entitlement-der /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Products/Debug-iphonesimulator/FitsinMVP.app
+
+Validate /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Products/Debug-iphonesimulator/FitsinMVP.app (in target 'FitsinMVP' from project 'FitsinMVP')
+    cd /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios
+    builtin-validationUtility /Users/Avii/Developer/fitsin-local-verification-20261102/fitsin/ios/build/NativeAppDerived/Build/Products/Debug-iphonesimulator/FitsinMVP.app -shallow-bundle -infoplist-subpath Info.plist
+
+** BUILD SUCCEEDED **
+
+
+Verified built Info.plist: NATIVE_WORKSPACE_ENABLED=NO; STOCK_SUMMARY_ENABLED=NO; WORKSPACE_API_URL empty; no ATS exemption.

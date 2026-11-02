@@ -5,6 +5,7 @@ struct MonthView: View {
     @State private var showingGoalSheet = false
     @State private var showingProjectionCalendar = false
     @State private var goalInput = ""
+    @Environment(\.scenePhase) private var scenePhase
     @State private var animateIn = false
 
     private static let gbpFormatter: NumberFormatter = {
@@ -55,9 +56,11 @@ struct MonthView: View {
                             Spacer().frame(height: 20)
 
                             historyLink
-                        } else {
-                            ProgressView()
+                        } else if vm.isLoading || vm.errorText == nil {
+                            ProgressView("Loading month…")
                                 .frame(maxWidth: .infinity, minHeight: 200)
+                        } else {
+                            Button("Retry month") { Task { await vm.load() } }.padding()
                         }
 
                         notices
@@ -74,7 +77,7 @@ struct MonthView: View {
                     animateIn = true
                 }
                 await vm.load()
-                vm.startAutoRefresh(intervalSeconds: 60)
+                if !Task.isCancelled && scenePhase == .active { vm.startAutoRefresh(intervalSeconds: 60) }
             }
             .onDisappear { vm.stopAutoRefresh() }
             .navigationBarTitleDisplayMode(.inline)
@@ -411,8 +414,8 @@ struct MonthView: View {
 
     private var notices: some View {
         VStack(spacing: 8) {
-            if let warning = vm.data?.warning, !warning.isEmpty {
-                InlineNotice(text: warning, tone: BrandTheme.danger, systemImage: "exclamationmark.triangle.fill")
+            if let error = vm.lastMonthErrorText {
+                InlineNotice(text: error, tone: BrandTheme.danger, systemImage: "wifi.exclamationmark")
             }
             if let error = vm.errorText {
                 InlineNotice(text: error, tone: BrandTheme.danger, systemImage: "wifi.exclamationmark")
