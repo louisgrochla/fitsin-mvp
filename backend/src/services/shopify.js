@@ -153,6 +153,7 @@ async function fetchOrdersWithLineItemsBetween(startIso, endIso) {
                 node {
                   id
                   name
+                  sku
                   quantity
                   originalUnitPriceSet { shopMoney { amount } }
                 }
@@ -308,6 +309,8 @@ export async function fetchDailySalesItems(dateKey, timezone) {
         sellerDeduction = round2(sellerDeduction + sellerNet);
         lineBreakdown.push({
           name: node.name || 'Item',
+          sku: typeof node.sku === 'string' && node.sku.trim() ? node.sku.trim() : null,
+          source_shop: config.shopify.domain.toLowerCase(),
           quantity: qty,
           gross,
           seller,
@@ -318,6 +321,8 @@ export async function fetchDailySalesItems(dateKey, timezone) {
       } else {
         lineBreakdown.push({
           name: node.name || 'Item',
+          sku: typeof node.sku === 'string' && node.sku.trim() ? node.sku.trim() : null,
+          source_shop: config.shopify.domain.toLowerCase(),
           quantity: qty,
           gross,
           seller: null,

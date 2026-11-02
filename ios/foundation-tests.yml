@@ -18,6 +18,12 @@ targets:
       - FitsinMVP/Storage/LocalCache.swift
       - FitsinMVP/ViewModels/TodayViewModel.swift
       - FitsinMVP/ViewModels/MonthViewModel.swift
+      - FitsinMVP/Workspace/WorkspaceTypes.swift
+      - FitsinMVP/Workspace/WorkspacePersistence.swift
+      - FitsinMVP/Workspace/WorkspaceModel.swift
+      - FitsinMVP/Workspace/PhotoPreparation.swift
+      - FitsinMVP/Workspace/LiveTagScanner.swift
+      - FitsinMVP/Workspace/StickerPrinter.swift
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fitsin.foundationtests
@@ -27,5 +33,7 @@ schemes:
       targets:
         FitsinFoundationTests: all
     test:
+      environmentVariables:
+        RUN_NATIVE_CONNECTED_TESTS: "$(RUN_NATIVE_CONNECTED_TESTS)"
       targets:
         - FitsinFoundationTests

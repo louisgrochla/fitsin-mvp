@@ -13,12 +13,14 @@ final class MonthViewModel: ObservableObject {
     private var loadTask: Task<Void, Never>?
     private let fetchMonth: (String?) async throws -> MonthMetrics
     private let usesCache: Bool
+    private let now: () -> Date
 
-    init(usesCache: Bool = true, fetchMonth: @escaping (String?) async throws -> MonthMetrics = { month in
+    init(usesCache: Bool = true, now: @escaping () -> Date = Date.init, fetchMonth: @escaping (String?) async throws -> MonthMetrics = { month in
         if let month { return try await APIClient.shared.getMonth(month: month) }
         return try await APIClient.shared.getMonth()
     }) {
         self.usesCache = usesCache
+        self.now = now
         self.fetchMonth = fetchMonth
     }
 
@@ -32,13 +34,13 @@ final class MonthViewModel: ObservableObject {
     }()
 
     private var monthKey: String {
-        Self.monthFormatter.string(from: Date())
+        Self.monthFormatter.string(from: now())
     }
 
     private var lastMonthKey: String {
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = TimeZone(identifier: "Europe/London") ?? .current
-        let lastMonth = cal.date(byAdding: .month, value: -1, to: Date()) ?? Date()
+        let lastMonth = cal.date(byAdding: .month, value: -1, to: now()) ?? now()
         return Self.monthFormatter.string(from: lastMonth)
     }
 

@@ -61,6 +61,14 @@
 	</array>
 	<key>STOCK_SUMMARY_ENABLED</key>
 	<string>$(STOCK_SUMMARY_ENABLED)</string>
+	<key>NATIVE_WORKSPACE_ENABLED</key>
+	<string>$(NATIVE_WORKSPACE_ENABLED)</string>
+	<key>WORKSPACE_API_URL</key>
+	<string>$(WORKSPACE_API_URL)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Read garment tags and take stock photographs.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Connect to your chosen sticker printer.</string>
 	<key>API_BASE_URL</key>
 	<string>$(API_BASE_URL)</string>
 </dict>

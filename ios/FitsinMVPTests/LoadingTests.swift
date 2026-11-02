@@ -25,6 +25,30 @@ final class LoadingTests: XCTestCase {
                                  pendingManual: 2, doubleSales: 0, failedListings: 4, openQuestions: 5) : nil)
     }
 
+    func testLondonMidnightAcceptsUTCPreviousDateThenExpiresAtNextShopDay() {
+        var now = ISO8601DateFormatter().date(from: "2026-06-30T23:30:00Z")!
+        let vm = TodayViewModel(usesCache: false, now: { now }, fetchStock: nil)
+        vm.data = TodayMetrics(actual_today: 25, target_today: 100, month_goal: nil,
+            remaining: 75, pct: 25, updated_at: "2026-06-30T23:15:00.000Z", data_delayed: false, warning: nil)
+        vm.loadCached()
+        XCTAssertEqual(vm.data?.actual_today, 25) // Both are July 1 in London.
+        now = ISO8601DateFormatter().date(from: "2026-07-01T23:01:00Z")!
+        vm.loadCached()
+        XCTAssertNil(vm.data)
+    }
+
+    func testMonthRolloverUsesLondonCalendar() {
+        var now = ISO8601DateFormatter().date(from: "2026-06-30T23:30:00Z")!
+        let vm = MonthViewModel(usesCache: false, now: { now })
+        vm.data = MonthMetrics(month: "2026-07", month_goal: 1000, mtd_actual: 25, mtd_target: 100,
+            ahead_behind: -75, days: [], updated_at: "2026-06-30T23:30:00Z", data_delayed: false, warning: nil)
+        vm.loadCached()
+        XCTAssertEqual(vm.data?.month, "2026-07")
+        now = ISO8601DateFormatter().date(from: "2026-07-31T23:01:00Z")!
+        vm.loadCached()
+        XCTAssertNil(vm.data)
+    }
+
     func testStockDoesNotBlockTodayAndFailureIsIndependent() async {
         let gate = Gate<StockSummaryResponse>()
         let visible = expectation(description: "Sales visible before stock")

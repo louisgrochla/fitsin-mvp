@@ -11,6 +11,8 @@ settings:
     PRODUCT_BUNDLE_IDENTIFIER: com.fitsin.mvp
     SWIFT_VERSION: 5.0
     STOCK_SUMMARY_ENABLED: "NO"
+    NATIVE_WORKSPACE_ENABLED: "NO"
+    WORKSPACE_API_URL: ""
 targets:
   FitsinMVP:
     type: application

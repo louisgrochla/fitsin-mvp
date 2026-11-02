@@ -33,9 +33,11 @@ final class TodayViewModel: ObservableObject {
     private let fetchMonth: () async throws -> MonthMetrics
     private let saveEntry: (Double, ManualSource, String?, String?, String?) async throws -> Void
     private let usesCache: Bool
+    private let now: () -> Date
 
     init(
         usesCache: Bool = true,
+        now: @escaping () -> Date = Date.init,
         fetchStock: (() async throws -> StockSummaryResponse)? = APIClient.stockSummaryEnabled ? { try await APIClient.shared.getStockSummary() } : nil,
         fetchToday: @escaping () async throws -> TodayMetrics = { try await APIClient.shared.getToday() },
         fetchMonth: @escaping () async throws -> MonthMetrics = { try await APIClient.shared.getMonth() },
@@ -44,6 +46,7 @@ final class TodayViewModel: ObservableObject {
         }
     ) {
         self.usesCache = usesCache
+        self.now = now
         self.fetchStock = fetchStock
         self.fetchToday = fetchToday
         self.fetchMonth = fetchMonth
@@ -58,9 +61,17 @@ final class TodayViewModel: ObservableObject {
         return f
     }()
 
+    private func isCurrentShopDay(_ timestamp: String) -> Bool {
+        let parser = ISO8601DateFormatter()
+        parser.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let date = parser.date(from: timestamp) ?? ISO8601DateFormatter().date(from: timestamp)
+        guard let date else { return false }
+        return Self.dateFormatter.string(from: date) == Self.dateFormatter.string(from: now())
+    }
+
     func loadCached() {
-        let currentMonth = String(Self.dateFormatter.string(from: Date()).prefix(7))
-        if let data, !data.updated_at.hasPrefix(Self.dateFormatter.string(from: Date())) {
+        let currentMonth = String(Self.dateFormatter.string(from: now()).prefix(7))
+        if let data, !isCurrentShopDay(data.updated_at) {
             self.data = nil
         }
         if let weekMonth, weekMonth != currentMonth {
@@ -71,7 +82,7 @@ final class TodayViewModel: ObservableObject {
         guard usesCache else { return }
         if data == nil,
            let cached: TodayMetrics = LocalCache.read(TodayMetrics.self, key: "today.json"),
-           cached.updated_at.hasPrefix(Self.dateFormatter.string(from: Date())) {
+           isCurrentShopDay(cached.updated_at) {
             data = cached
             errorText = "Saved Today data — refreshing…"
         }
@@ -197,7 +208,7 @@ final class TodayViewModel: ObservableObject {
     private func makeWeekAhead(from days: [MonthDay]) -> [WeekProjection] {
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = TimeZone(identifier: "Europe/London") ?? .current
-        let start = cal.startOfDay(for: Date())
+        let start = cal.startOfDay(for: now())
         guard let end = cal.date(byAdding: .day, value: 6, to: start) else { return [] }
         return days.compactMap { day in
             guard let date = Self.dateFormatter.date(from: day.date) else { return nil }

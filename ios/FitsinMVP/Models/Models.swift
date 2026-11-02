@@ -166,6 +166,8 @@ struct ManualEntriesResponse: Codable {
 }
 
 struct DayLineItem: Codable, Identifiable {
+    let sku: String?
+    let source_shop: String?
     let name: String
     let quantity: Int
     let gross: Double
