@@ -14,7 +14,7 @@ Use Codex only. Do not invoke Claude, Claude Code, its plugin or Anthropic APIs,
 
 Your goal is to audit the current remote code, implement a measured performance/reliability foundation, and prepare the remaining programme for gated delivery:
 
-1. Verify both checkouts, revisions, instructions, dependencies and local test/build capabilities. Preserve existing changes. If a repository is unavailable, continue independent work and identify the exact missing access.
+1. Fetch and verify both checkouts, revisions, instructions, dependencies and local test/build capabilities. Follow the remote synchronisation correction in CLOUD-HANDOVER.md: Crosstopher must contain commit d580b590b8560eb2015dd4ea5733049149c518fc and its OCR/backlog files. The first cloud run used an older remote and its claim that this implementation is absent is obsolete. Preserve existing changes. If a repository is unavailable, continue independent work and identify the exact missing access.
 2. Inspect actual code and existing workflows, especially OCR/backlog, sales semantics and loading/cache behaviour. Separate implemented behaviour, historical documentation, hypotheses and verified runtime findings.
 3. Establish a reproducible synthetic baseline for loading, failure recovery, request counts and backend timings. Document what cannot be measured without an iPhone, Xcode, live access or physical hardware. Never claim source inspection proves live performance.
 4. Audit current Fitsin UX journeys and propose concrete loading/error/empty/stale states and navigation improvements. Propose a small first refactor slice with before/after acceptance criteria, rather than a blanket rewrite.

@@ -27,6 +27,20 @@ Pre-existing local changes observed before documentation:
 
 Do not stage all local files, discard changes or infer that an untracked directory is part of the remote product. Review any code needed by the cloud task separately.
 
+## Remote synchronisation correction — 2 November 2026
+
+The first cloud run correctly discovered that Crosstopher remote main lacked the OCR/backlog implementation: 23 existing local commits had not been pushed. This was a preparation error, not evidence that the implementation needed rebuilding. Those commits have now been pushed, bringing Crosstopher main to `d580b590b8560eb2015dd4ea5733049149c518fc`.
+
+Before doing any audit or implementation in a new or resumed cloud workspace:
+
+1. Fetch both repositories and record the remote and checked-out revisions. Preserve any existing task changes; do not hard-reset a working branch.
+2. Ensure the Crosstopher checkout contains `d580b590b8560eb2015dd4ea5733049149c518fc` in its ancestry (or is that commit). Update a clean checkout to current main; integrate into a working task branch carefully if needed.
+3. Verify `apps/worker/src/scans.ts`, `apps/web/src/Backlog.tsx`, `apps/web/src/ocr.ts`, and migrations `0016_tag_scans.sql` through `0020_delete_a_garment.sql` exist. The OCR asset `apps/web/public/ocr/eng.traineddata.gz` is also committed.
+4. Ensure Fitsin contains the handover commit `a601c957d19ae94a5ebb340e81890cb5126bba1a` and this correction from current main.
+5. Reassess findings from the stopped cloud run against these revisions. Retain useful independent Fitsin work, but discard the stale conclusion that Crosstopher has no backlog/OCR implementation.
+
+The untracked local `storefront/` directory is still excluded. No production deployment or migration was performed to synchronise these repositories.
+
 ## Getting the handover into cloud
 
 1. Review these documentation files locally.
