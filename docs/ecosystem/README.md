@@ -22,14 +22,21 @@ Saved 2 November 2026. Owner: Louis. Status: planning and handover only.
 
 ## Current execution status
 
-Documentation prepared for remote publication; the owner authorised committing and pushing this packet on 2 November 2026. The owner also authorised bulk cloud foundation development followed by local iOS verification and manual review; see NEW-SESSION-GOAL.md for the bounded scope. No application implementation, deployment, migration, cloud environment creation or new session has been performed. Before starting in cloud, verify that the selected remote revision contains this packet. Existing local Xcode changes are outside the documentation commit.
+The synchronised cloud audit and bounded foundation implementation are complete for review on `codex/foundation-reliability` and Crosstopher `codex/ecosystem-audit`. Nothing has been merged or deployed. Native compilation/device verification remain pending; this is not a release-ready declaration.
+
+- [Audit and corrected capability inventory](AUDIT-2026-11-02.md)
+- [Measured synthetic baseline and reproduction](BASELINE.md)
+- [Proposed integration contracts](INTEGRATION-CONTRACTS.md)
+- [Complete dependency/acceptance backlog, including all 76 candidate bullets](MILESTONES.md)
+- [Xcode/device/manual verification checklist](LOCAL-VERIFICATION.md)
+- [Next-session checkpoint and owner gate](CHECKPOINT.md)
 
 ## Programme tracker
 
 | Gate | Scope | Status |
 | --- | --- | --- |
-| 0 | Cloud readiness, baseline audit, concrete delivery proposals | Prepared for a new session; not started |
-| 1 | Performance/reliability/usability foundation | Authorised for measured, bounded cloud implementation after baseline; local verification before release |
+| 0 | Cloud readiness, baseline audit, concrete delivery proposals | Complete on synchronised bases; evidence saved |
+| 1 | Performance/reliability/usability foundation | Bounded changes implemented/tested in cloud; native tests authored but unrun; local review before release |
 | 2 | Shared identity, item and transaction contracts | Proposed |
 | 3 | Backlog capture and draft-completion workflows | Proposed |
 | 4 | Connected Today and image-led sales | Proposed |
