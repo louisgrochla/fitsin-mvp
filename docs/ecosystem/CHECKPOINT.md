@@ -29,7 +29,7 @@ Crosstopher 635 tests pass (baseline 634), one opt-in timing test skipped in the
 
 Xcode, simulator, iPhone, Apple signing/APNs and shop hardware were unavailable. Four native regression tests are **authored, not executed**. No live OCR photo scoring or marketplace validation occurred. Build/review/manual steps are in LOCAL-VERIFICATION.md, including fixture commands, exact XcodeGen/xcodebuild commands and the sign-off record.
 
-Known follow-ups include shared history across endpoints/processes, scoped asynchronous caches, calendar query ordering, file-write concurrency, the 1,000-manual-entry aggregation cap, webhook verification/deduplication, incomplete deduction reporting and settled-proceeds/refund semantics. This foundation does not make combined finances trustworthy by itself.
+Known follow-ups include shared history across endpoints/processes, scoped asynchronous caches, calendar query ordering, file-write concurrency outside manual entries and across processes, webhook verification/deduplication, incomplete deduction reporting and settled-proceeds/refund semantics. This foundation does not make combined finances trustworthy by itself.
 
 ## Recommended next gate and decisions
 
@@ -49,3 +49,14 @@ Capture/review can continue in Crosstopher and the business dashboard in Fitsin 
 Fetch both remotes and inspect clean/dirty state before resuming. Verify the required commits remain in ancestry; preserve any new work and rebase task branches carefully if main advances. Select Node 22 and use locked installs; do not invoke Claude/Anthropic or check their auth. Run the evidence commands appropriate to any new edits, then native checks on Mac. No cloud task depends on laptop wakefulness.
 
 Revert individual implementation commits to undo the unshipped foundation; no database or production rollback is needed. Keep the audit/catalogue documents when reverting a runtime change. Never deploy, merge, migrate production, send messages or trigger live publish/delist as a continuation of this checkpoint without its separate authorisation.
+
+## Continuation checkpoint — 2 November 2026
+
+Independent review resumed from Fitsin `05b5f76` and Crosstopher `abff581` on the existing branches. Existing work branches were retained and no dirty changes were present. Read the continuation section in AUDIT-2026-11-02.md for reproduced failures and scope.
+
+- Fitsin manual metrics now include every matching entry, while public list responses retain their 1,000-entry cap. Manual create/delete read-modify-write operations are serialised within one backend process and recover after write rejection. Multi-process storage, other JSON services, corrupt-file handling, durable write idempotency and financial semantics remain follow-ups.
+- Crosstopher runtime grouping passed independent review unchanged. Signed/unsigned full-sync tests now exercise multiple listings and seller-bound photo tokens. Existing OCR/backlog remains untouched and every new ecosystem feature stays gated.
+- Cloud: Fitsin 23 passing checks (22 leaf tests and one parent), actual endpoint probes at all three sizes; Crosstopher 636 passing tests, one opt-in benchmark separately passing, root/Worker typechecks and web build passing with the existing bundle warning. New raw evidence uses `*-continuation.*` names.
+- Native/device: no new evidence. Four Swift regression tests remain authored but unrun. All Xcode, simulator, iPhone, APNs, accessibility and shop hardware checks remain pending. Release-ready remains **false**.
+
+Changes are intended for the same draft PRs. No merge, deployment, live integration action or new feature approval is included.

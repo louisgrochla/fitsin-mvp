@@ -49,3 +49,9 @@ Run `MODE=healthy MONTH_DELAY_MS=2000 node backend/scripts/ios-fixture.mjs` on t
 ## Sign-off record
 
 Record reviewer, both SHAs, Mac/Xcode/device versions, environment/data source, passed/failed checks, logs/screenshots/xcresults, timings, known issues and next action. Leave release-ready **false** until native/device and owner review are complete. Revert the separate foundation commits if needed; no data migration or production rollback is required for this unshipped work.
+
+## Continuation cloud evidence — 2 November 2026
+
+Cloud rerun: Node 22.23.4, locked installs, `cd backend && NODE_ENV=test npm test` passes 23 checks (including one parent); `SAMPLES=5 node scripts/benchmark.mjs` passes actual loopback endpoint assertions. The new manual-store tests use temporary synthetic JSON only and cover uncapped aggregation plus in-process mutation serialisation. See `evidence/fitsin-tests-continuation.txt` and `evidence/backend-continuation.json`. These results do not complete any native/device checkbox above.
+
+Crosstopher: `npm test` passes 636 tests, `npm run typecheck`, `npx tsc -p apps/worker/tsconfig.json --noEmit` and `npm run build -w @crosstopher/web` pass. Run the opt-in synthetic benchmark with `PERF_OUTPUT=/tmp/crosstopher-list.json npx vitest run --project worker apps/worker/test/performance.test.ts`. Signed photo correctness is covered by the ordinary snapshot tests, but this timing probe still disables signing.
